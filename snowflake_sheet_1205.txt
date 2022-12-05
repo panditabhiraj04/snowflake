@@ -1,0 +1,1972 @@
+
+
+
+
+/***********learning sheet  */
+------------------------------------------------USEFUL QUERY ------------
+select * from table
+(information_schema.copy_history(table_name=>'PHCDW_SYS_COMMON.RPTG_ALERT_MSTR_TEMP',start_time=> dateadd(hours, -1, current_timestamp())));
+
+select * from information_schema.load_history
+  where schema_name=current_schema() 
+  and table_name='MYTABLE';
+
+select t.$1, t.$2 from phcdw_sys_common.RPTG_SLSFRCE_TM_MPPNG_STG t;
+
+list @RPTG_SLSFRCE_TM_MPPNG_stg;
+
+show objects like '%RPTG_SLSFRCE_TM_MPPNG_stg%'  ;
+
+/*------------------------------------------------count checking to tables --------------------------------------*/
+
+create or replace procedure after_before_count_checking()
+RETURNS VARIANT
+//RETURNS TABLE("ID" NUMBER(38,0))
+LANGUAGE JAVASCRIPT
+//LANGUAGE SQL
+AS
+$$
+    var sqlTempTableText = `CREATE OR REPLACE TEMPORARY TABLE PHCDW_SYS_COMMON.after_table_data(after_table_count varchar(2000));`;
+    var ctas_stmt = snowflake.createStatement({ sqlText: sqlTempTableText });
+    ctas_stmt.execute();
+    
+    var sqlTempTableText = `CREATE OR REPLACE TEMPORARY TABLE PHCDW_SYS_COMMON.before_table_data(before_table_count varchar(2000));`;
+    var ctas_stmt = snowflake.createStatement({ sqlText: sqlTempTableText });
+    ctas_stmt.execute();
+    
+    var sqlTempTableText_2 =`insert into after_table_data(after_table_count  ) values
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_HRCHY_DIM_202207070902_AFTR ;')    ,    
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_ADDR_DIM_202207070902_AFTR;')     ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_PRFL_DIM_202207070902_AFTR;')    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_LCNSE_DIM_SNP_202207070902_AFTR;') ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_BRDG_SNP_202207070902_AFTR;')   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_ADDR_BRDG_SNP_202207070902_AFTR;') ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_ACCT_HRCHY_202207070902_AFTR;' )     ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_LCNSE_DIM_202207070902_AFTR;'  )     ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_WHC_ACCT_ADDR_BRDG_202207070902_AFTR;') ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_WHC_ACCT_BRDG_202207070902_AFTR;'  )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_ADDR_DIM_202207070902_AFTR;'  )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_ACCT_PRFL_DIM_202207070902_AFTR;' )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_BRDG_202207070902_AFTR;'      )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_HCP_LCNSE_FLAT_202207070902_AFTR;' ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_ADDR_BRDG_202207070902_AFTR;'  )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_PRFL_DIM_202207070902_AFTR;'   )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_HRCHY_DIM_SNP_202207070902_AFTR;' ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_WHC_MDM_ACCT_FLAT_202207070902_AFTR;' ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_PRFL_DIM_SNP_202207070902_AFTR;' ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_BRDG_SNP_202207070902_AFTR;'      ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_PRFL_DIM_SNP_202207070902_AFTR;'  ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_ACCT_FLAT_202207070902_AFTR;'     ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_HCO_PRFL_TOP_PRNT_CLSSFCTN_202207070902_AFTR;' ),
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_ADDR_DIM_SNP_202207070902_AFTR;'       )   , 
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_HCP_FLAT_202207070902_AFTR;'           )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_ADDR_BRDG_SNP_202207070902_AFTR;'      )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_HCP_ADDR_FLAT_202207070902_AFTR;'      )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_ALL_BU_ACCT_LKP_OUTPUT_202207070902_AFTR;' )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_BRDG_202207070902_AFTR;'               )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_ADDR_BRDG_202207070902_AFTR;'          )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_WHC_ACCT_ADDR_DIM_WK_202207070902_AFTR;'  )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_HCP_PRFL_DIM_202207070902_AFTR;'          )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_HCP_ADDR_DIM_202207070902_AFTR;'          )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_HCP_LCNSE_DIM_202207070902_AFTR;'         )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_WHC_ACCT_PRFL_DIM_202207070902_AFTR;'     )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_WHC_ACCT_ADDR_DIM_202207070902_AFTR;'     )  ;`;
+    
+    var ctas_stmt_2 = snowflake.createStatement({ sqlText: sqlTempTableText_2 });
+    ctas_stmt_2.execute();
+    
+    var sqlTempTableText_3 =`insert into before_table_data(before_table_count  ) values
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_HRCHY_DIM_202207061636_BFR' )    ,    
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_ADDR_DIM_202207061636_BFR'   )     ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_PRFL_DIM_202207061636_BFR'   )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_LCNSE_DIM_SNP_202207061636_BFR' ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_BRDG_SNP_202207061636_BFR'   )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_ADDR_BRDG_SNP_202207061636_BFR' ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_ACCT_HRCHY_202207061636_BFR' )     ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_LCNSE_DIM_202207061636_BFR'  )     ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_WHC_ACCT_ADDR_BRDG_202207061636_BFR') ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_WHC_ACCT_BRDG_202207061636_BFR'  )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_ADDR_DIM_202207061636_BFR'  )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_ACCT_PRFL_DIM_202207061636_BFR' )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_BRDG_202207061636_BFR'      )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_HCP_LCNSE_FLAT_202207061636_BFR' ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_ADDR_BRDG_202207061636_BFR'  )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_PRFL_DIM_202207061636_BFR'   )    ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_HRCHY_DIM_SNP_202207061636_BFR' ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_WHC_MDM_ACCT_FLAT_202207061636_BFR' ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_ACCT_PRFL_DIM_SNP_202207061636_BFR' ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_BRDG_SNP_202207061636_BFR'      ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_PRFL_DIM_SNP_202207061636_BFR'  ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_ACCT_FLAT_202207061636_BFR'     ) ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_HCO_PRFL_TOP_PRNT_CLSSFCTN_202207061636_BFR' ),
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_ADDR_DIM_SNP_202207061636_BFR'       )   , 
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_HCP_FLAT_202207061636_BFR'           )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_ADDR_BRDG_SNP_202207061636_BFR'      )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_MDM_HCP_ADDR_FLAT_202207061636_BFR'      )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.PUB_ALL_BU_ACCT_LKP_OUTPUT_202207061636_BFR' )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_BRDG_202207061636_BFR'               )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.MDM_HCP_ADDR_BRDG_202207061636_BFR'          )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_WHC_ACCT_ADDR_DIM_WK_202207061636_BFR'  )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_HCP_PRFL_DIM_202207061636_BFR'          )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_HCP_ADDR_DIM_202207061636_BFR'          )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_HCP_LCNSE_DIM_202207061636_BFR'         )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_WHC_ACCT_PRFL_DIM_202207061636_BFR'     )   ,
+                            ('select count(1) from TB_PHCDW_QA_EP157.PHCDW_SYS_COMMON.CONS_WHC_ACCT_ADDR_DIM_202207061636_BFR'     )  ;`;
+                            
+    var ctas_stmt_3 = snowflake.createStatement({ sqlText: sqlTempTableText_3 });
+    ctas_stmt_3.execute();
+  
+    var lv_extract_stmt_11 = `select after_table_count from after_table_data`;
+    var lv_extract_rs = snowflake.execute({sqlText: lv_extract_stmt_11});
+  
+    var lv_extract_stmt_1     = `select before_table_count from before_table_data;`;
+    var lv_extract_rs_1 = snowflake.execute({sqlText: lv_extract_stmt_1});
+
+  
+//    //var storage_array= [];
+    src_extrct_qry = ''
+    var sqlTempTableText_3 = `CREATE OR REPLACE TEMPORARY TABLE PHCDW_SYS_COMMON.table_data_count(after_table_name varchar(2000),
+                                                                                                  after_count  number ,
+                                                                                                  before_table_name varchar(2000),
+                                                                                                  before_count  number
+                                                                                                  );`;
+    var ctas_stmt_4 = snowflake.createStatement({ sqlText: sqlTempTableText_3 });
+    ctas_stmt_4.execute();
+    
+    
+    
+    
+      for (i = 1; i <= lv_extract_rs.getRowCount(); i++) 
+        { 
+         //src_extrct_qry = '';
+         lv_extract_rs.next()
+         src_extrct_qry = lv_extract_rs.getColumnValue(1) 
+
+         lv_extract_rs_1.next()
+         src_extrct_qry_1 = lv_extract_rs_1.getColumnValue(1)
+         
+     var lv_extract_stmt_10 = `select substr('${src_extrct_qry}',57) from dual;`;
+     var lv_extract_rs_10 = snowflake.execute({sqlText: lv_extract_stmt_10});
+     lv_extract_rs_10.next()
+     var trimCount = lv_extract_rs_10.getColumnValue(1) 
+     
+      var lv_extract_stmt_11 = `${src_extrct_qry}`;
+     var lv_extract_rs_11 = snowflake.execute({sqlText: lv_extract_stmt_11});
+     lv_extract_rs_11.next()
+     var trimCount_1 = lv_extract_rs_11.getColumnValue(1) 
+     
+     /****************before backup*****************/
+     
+     var lv_extract_stmt_10 = `select substr('${src_extrct_qry_1}',57) from dual;`;
+     var lv_extract_rs_10 = snowflake.execute({sqlText: lv_extract_stmt_10});
+     lv_extract_rs_10.next()
+     var trimCount_3 = lv_extract_rs_10.getColumnValue(1) 
+     
+      var lv_extract_stmt_11 = `${src_extrct_qry_1}`;
+     var lv_extract_rs_11 = snowflake.execute({sqlText: lv_extract_stmt_11});
+     lv_extract_rs_11.next()
+     var trimCount_4 = lv_extract_rs_11.getColumnValue(1) 
+    
+         
+     var lv_sqlInsertText = `insert into table_data_count
+                               (after_table_name,
+                                after_count,
+                                before_table_name,
+                                before_count )
+                               values(
+                               '${trimCount}',
+                                ${trimCount_1},
+                               '${trimCount_3}',
+                                ${trimCount_4}
+                                )`;
+
+   var lv_ins_rs = snowflake.execute({sqlText: lv_sqlInsertText});
+   lv_ins_rs.next();
+   lv_ins_cnt=lv_ins_rs.getNumRowsAffected();  
+
+    }
+
+return 'Successfully data inserted';
+
+$$;
+
+call AFTER_BEFORE_COUNT_CHECKING();
+
+truncate table after_table_data;
+truncate table before_table_data;
+truncate table table_data_count;
+
+select * from table_data_count;
+
+/*-------------------------------------------------loop execuation -------------------------------------------------------*/
+
+   var sqlTempTableText = `CREATE OR REPLACE TEMPORARY TABLE PHCDW_SYS_COMMON.temp_2(OTBD_RPT_NM	VARCHAR(200),
+                                                                                      OTBD_RPT_TYP	VARCHAR(20),
+                                                                                      BU_NM	VARCHAR(20),
+                                                                                      PROD_NM	VARCHAR(20),
+                                                                                      DATA_DT	VARCHAR(30),
+                                                                                      DQC_CHK_TYP	VARCHAR(200),
+                                                                                      DQC_STATUS_FLG	VARCHAR(20));`;
+
+
+    var ctas_stmt = snowflake.createStatement({ sqlText: sqlTempTableText });
+    ctas_stmt.execute();
+
+    var lv_extract_stmt     = `select sql_qry from T1_temp;`;
+    var lv_extract_rs = snowflake.execute({sqlText: lv_extract_stmt});
+
+
+      for (i = 1; i <= lv_extract_rs.getRowCount(); i++) 
+        { 
+         src_extrct_qry = '';
+         lv_extract_rs.next()
+         src_extrct_qry = lv_extract_rs.getColumnValue(1) 
+
+       var lv_sqlInsertText = `insert into temp_2
+                               (OTBD_RPT_NM,
+                                OTBD_RPT_TYP,
+                                BU_NM,
+                                PROD_NM,
+                                DATA_DT,
+                                DQC_CHK_TYP,
+                                DQC_STATUS_FLG
+                               )${src_extrct_qry}`;
+
+   var lv_ins_rs = snowflake.execute({sqlText: lv_sqlInsertText,binds:[BATCH_ID, JOB_ID]});
+   lv_ins_rs.next();
+   lv_ins_cnt=lv_ins_rs.getNumRowsAffected();  
+
+
+}
+-------------------------------------------------------------------------------------------------
+
+create OR REPLACE temporary table TEST_2 (
+  HASH1 VARCHAR,
+  COL1 VARCHAR,
+  COL2 VARCHAR,
+  COL3 VARCHAR
+);    
+
+INSERT INTO TEST_2 values ('cpdfer0', 'abc', 'xyz', 'I');
+INSERT INTO TEST_2 values ('sdfghj7', 'bnm', 'xyz', 'J');
+INSERT INTO TEST_2 values ('cpdfer0', 'abc', 'xyz', 'I');
+INSERT INTO TEST_2 values ('acvfgt9', 'xyz', 'bnm', 'K');
+INSERT INTO TEST_2 values ('zp3fert', 'cbc', 'lyz', 'M');
+INSERT INTO TEST_2 values ('acvfgt9', 'xyz', 'bnm', 'K');
+
+/*********** REMOVING DUPLICATE RECORDS */
+
+select hash1 from test_2
+where hash1 not in (
+select max(hash1) from test_2 group by COL1,COL2);
+
+SELECT * FROM (
+SELECT HASH1,ROW_NUMBER() OVER( PARTITION BY hash1,COL1,COL2 ORDER BY hash1,COL1,COL2)RN FROM test_2 
+) 
+WHERE RN != 1;
+
+// difference between cte and subqueries ---we can use cte for other place in queries but subqueries we can use only one plecesa where we  mention
+
+
+/****************GETTING HIGHEST SALARY */
+
+Create or replace temporary table tbl_Employees  
+(  
+     Id int primary key not null identity(1,1),  
+     FirstName varchar(50),  
+     LastName varchar(20),  
+     Location varchar(20),  
+     Gender varchar(50),  
+     Salary int  
+) ;
+
+Insert into tbl_Employees values (1,'Chittaranjan', 'Swain','Odisha', 'Male', 80000) ;
+Insert into tbl_Employees values (2,'Chandin', 'Swain', 'Pune','Female', 80000) ; 
+Insert into tbl_Employees values (3,'Mitu', 'Pradhan','Delhi', 'Male', 55000)  ;
+Insert into tbl_Employees values (4,'Jeni', 'Swain','Chennai', 'Female', 76000)  ;
+Insert into tbl_Employees values (5,'Adyashree', 'Swain','UK', 'Female', 49000)  ;
+Insert into tbl_Employees values (6,'Ram', 'Kumar','US', 'Male', 39000)  ;
+Insert into tbl_Employees values (7,'Jitendra', 'Gouad','Hydrabad', 'Male', 35000)  ;
+Insert into tbl_Employees values (8,'Dibas', 'Hembram','Bangalore', 'Male', 55000)  ;
+
+select * from (
+select salary,row_number() over( order by salary desc)rn 
+from tbl_Employees
+)
+where rn <=3;
+
+//-----------------------------------checking for same amount
+
+select case when count(x.rn) > 1 then x.salary
+                        when x.rn is null then 'null'
+                        else x.salary end salary
+from (
+select salary,rank() over( order by salary desc)rn 
+from tbl_Employees
+)x
+where rn = 8
+group by x.salary ,x.rn
+;
+-----------------------------------------------------------------------------------------------------
+
+/*--------------------------------------function in snowflake------------------------------------------*/
+
+------------------------------------------------------------------------------------------------
+
+show functions like '%count%';
+
+select get_ddl('function','count_checking(varchar)');
+
+CREATE OR REPLACE temporary FUNCTION "RESPONSE_JSON_1"("tbl_nm" VARCHAR(16777216), "lv_ins_cnt" FLOAT, "lv_upd_cnt" FLOAT, "lv_dlt_cnt" FLOAT)
+RETURNS VARIANT
+LANGUAGE JAVASCRIPT
+AS '
+
+    //This array variable will be returned
+     var lv_responseJSON = {};
+
+    lv_responseJSON["INSERTCOUNT"] = lv_ins_cnt;
+    lv_responseJSON["UPDATECOUNT"] = lv_upd_cnt;
+    lv_responseJSON["DELETECOUNT"] = lv_dlt_cnt;
+    lv_responseJSON["TABLE"] = tbl_nm;
+
+
+ return lv_responseJSON;
+ ';
+
+SELECT PHCDW_SYS_COMMON.RESPONSE_JSON_1('abc','1','1','1');
+
+
+create or replace temporary function arrar_store("lv_count" float)
+//RETURNS VARIANT
+RETURNS TABLE("ID" NUMBER(38,0))
+//LANGUAGE JAVASCRIPT
+LANGUAGE SQL
+AS
+$$
+   
+    var storage_array= [];
+    for(i = 0;i <5; i++){
+      storage_array.push(i);
+    }
+
+   var xsdsd      = select value::string as array_value from
+                        lateral flatten(input=>select * from tbl_count);
+     return xsdsd;
+return storage_array;
+$$;
+
+SELECT arrar_store('1');
+
+
+Create or replace temporary table tbl_count  
+(  
+     Id array 
+) ;
+
+insert into tbl_count(
+id) 
+SELECT arrar_store('1');
+
+
+select * from tbl_count t;
+
+select value::string as array_value from
+lateral flatten(input=>select * from tbl_count) ; 
+    
+/*---------------------------------------------------------------------*/    
+
+select *
+from tbl_Employees  order by salary;
+    
+select * 
+        from (
+select salary,row_number() over(order by salary desc) rn
+from tbl_Employees 
+)x
+where rn = 2
+;    
+    
+ 
+ select count(*) 
+ from tbl_Employees 
+ order by  salary desc;
+    
+ //-------------------------------------------------------Joining /union/union all
+ 
+ create or replace temporary table PHCDW_SYS_COMMON.z1(t1 int);
+ create or replace temporary table PHCDW_SYS_COMMON.z2(t2 int);
+
+Insert into z1 values (null) ;  // 1,1,1,0,null
+Insert into z1 values (1) ;
+Insert into z1 values (1) ;
+Insert into z1 values (1) ;
+
+Insert into z2 values (null) ;  // 1,1,1,1,null
+Insert into z2 values (1) ;
+Insert into z2 values (1) ;
+Insert into z2 values (1) ;
+Insert into z2 values (1) ;
+ 
+ select * from z1;
+ select * from z2;
+  
+ UPDATE  z1
+ SET T1= 4
+  where t1 =null;
+  
+ select * from z1 inner join z2 on t1=t2 ;   // inener join 
+ 
+ select * from z1 left join z2 on t1=t2 ;   // left join    
+  
+ select * from z1 right join z2 on t1=t2 ;   // right join
+  
+ select * from z1 full outer join z2 on t1=t2 ;   // full  outer join
+    
+ select * from z1 full outer join z2 ;  // cross join  
+    
+// 1,1,1,0,null
+// 1,1,1,1,null ,null  
+
+select t1 from z1
+union 
+select t2 from z2;   // get only unique columns 
+
+select t1 from z1
+union all
+select t2 from z2;   // get sum of all records from both table 
+
+//------------------------------------------------------------------------------------------- employee and manager 
+
+CREATE or replace temporary  TABLE emp (empid INT NOT NULL PRIMARY KEY,ename VARCHAR(50),lname VARCHAR(50),mgr INT FOREIGN KEY REFERENCES emp(empid),sal int);
+ 
+INSERT INTO emp VALUES (1,'naresh','roy',NULL,10000);
+INSERT INTO emp VALUES (3,'sravan','singh',1,5000);
+INSERT INTO emp VALUES (5,'harish','tiwari',3,3000);
+INSERT INTO emp VALUES (2,'satish','pandey',5,20000);
+INSERT INTO emp VALUES (6,'me','system',1,9999);
+
+
+//-------------------------------------------get tree by connect by prior 
+select empid,ename,mgr,level
+from emp
+start with mgr is null
+connect by prior  empid =  mgr 
+order by empid
+;
+
+
+//-------------------------------------------get tree by connect cte without level with manager name  
+
+select cte.empid,cte.ename,cte.mgr,t.ename as mgr_name  from(
+with details as (
+select empid,ename,mgr from emp 
+where mgr is null 
+union
+select empid,ename,mgr from emp 
+where mgr is not null 
+ )
+select * from details
+order by empid
+)cte
+left join emp t on cte.mgr = t.empid
+order by empid;
+
+
+
+//-------------------------------------------get tree by connect cte without level with manager name 
+with details as (
+select empid,ename,mgr,1 level from emp 
+where mgr is null 
+union all
+select  r.empid,r.ename,r.mgr,t.level+1 from emp r  // –Recursive Subquery
+  inner join details t on r.mgr = t.empid
+where r.mgr is not null 
+ )
+select * from details
+order by empid;
+
+
+//-----------------------email 
+SELECT empid, ENAME,lname, MGR,(ENAME||lname||'@gmail.com') mail_id
+FROM EMP
+;
+
+// for sql use instr to find the position
+select substr(x.d,1,instr(x.d,'@')-1)full ,
+       substr(x.d,1,instr(x.d,'.')-1)first,
+       substr(x.d,instr(x.d,'.')+1,instr(x.d,'.'))middle ,
+       substr(x.d,instr(x.d,'.')+1+instr(x.d,'.')+1,instr(x.d,'.')+1)last ,
+substr(x.d,instr(x.d,'@')+1) last  from (
+select 'abhi.kumar.pandit@cognizant.com' as d from dual)x ;
+
+
+//---------------------------------------
+
+SELECT  reverse('WELECOME')
+FROM DUAL
+;
+
+SELECT listagg(s) within group(order by level desc) FROM (
+SELECT SUBSTRING(D,LEVEL,1) S ,LEVEL  FROM
+(
+SELECT 'WELCOME' AS D
+FROM DUAL 
+ )
+CONNECT BY prior LEVEL < length(d)
+  )
+;
+
+select listagg(p) within group(order by level desc)  from(
+select  substr(d,level,1) as p,level  from (
+(select 'welcome' as d from dual))
+connect by prior level <= length(d));
+
+
+
+
+//-----------------2nd heighest salary 
+select case when x.rn != 2 then null 
+        else x.salary end SecondHighestSalary from (
+select salary,row_number() over(order by salary desc) rn
+from Employee 
+)x
+where rn = 2 
+;
+
+//-----------------------------------------------------------
+
+create or replace temporary table team(teams varchar(20));
+
+insert into team values ('IND');
+insert into team values ('SL');
+insert into team values ('WED');
+insert into team values ('AUS');
+
+
+WITH CTE AS (
+  SELECT CASE WHEN TEAMS ='IND' THEN 1
+       WHEN TEAMS ='SL' THEN 2
+    WHEN TEAMS ='WED' THEN 3
+  WHEN TEAMS ='AUS' THEN 4 
+  ELSE 0 END ID 
+  FROM TEAM 
+  )
+SELECT *
+FROM CTE A INNER JOIN CTE b
+ ON A.ID != B.ID
+ AND A.ID < B.ID
+;
+
+
+CREATE OR REPLACE temporary TABLE  MATCH_RESULTS(
+   TEAM_A VARCHAR(10),
+   TEAM_B VARCHAR(10),
+   RESULT VARCHAR(10)
+);
+
+INSERT INTO MATCH_RESULTS VALUES('India','Bangladesh','India');
+INSERT INTO MATCH_RESULTS VALUES('India','Pakistan','India');
+INSERT INTO MATCH_RESULTS VALUES('India','Srilanka','null');
+INSERT INTO MATCH_RESULTS VALUES('Srilanka','Bangladesh','Srilanka');
+INSERT INTO MATCH_RESULTS VALUES('Srilanka','Pakistan','Pakistan');
+INSERT INTO MATCH_RESULTS VALUES('Bangladesh','Pakistan','Bangladesh');
+
+select * from MATCH_RESULTS ;
+
+
+with cte as (
+ select TEAM,count(TEAM) matches ,result from (
+select TEAM_A team ,result
+from MATCH_RESULTS t 
+union all 
+select team_b team ,result
+from MATCH_RESULTS t 
+ )
+ group by team , result )
+
+select t.result ,count(t.result) win  from MATCH_RESULTS  t
+group by t.result 
+
+;
+
+with cte as (
+select  TEAM_A team ,result
+from MATCH_RESULTS t 
+union all
+select  TEAM_B team ,result
+from MATCH_RESULTS t 
+)
+
+select team,count(team) ,sum(case when result = team then 1 else 0 end ) win ,
+       sum(case when result = 'null' then 1 else 0 end ) tie  ,
+       sum(case when result != team and result != 'null' then 1 else 0 end ) lose 
+       
+       from cte
+group by team 
+;
+
+
+//-------------------------------------------------------storage integration 
+
+show integrations;
+desc integration CYRUS_S3_STORAGE_INT_DEV;
+    
+//-------------------------------------------------------    
+    
+ -- Create some tables and insert some rows.
+create OR REPLACE TEMPORARY table products (product_id integer, wholesale_price real);
+insert into products (product_id, wholesale_price) values 
+    (1, 1.00),
+    (2, 2.00);   
+    
+ create OR REPLACE TEMPORARY table sales (product_id integer, retail_price real, 
+    quantity integer, city varchar, state varchar);
+insert into sales (product_id, retail_price, quantity, city, state) values 
+    (1, 2.00,  1, 'SF', 'CA'),
+    (1, 2.00,  2, 'SJ', 'CA'),
+    (2, 5.00,  4, 'SF', 'CA'),
+    (2, 5.00,  8, 'SJ', 'CA'),
+    (2, 5.00, 16, 'Miami', 'FL'),
+    (2, 5.00, 32, 'Orlando', 'FL'),
+    (2, 5.00, 64, 'SJ', 'PR');
+    
+//    We are given a table consisting of two columns, Name, and Profession. We need to query all the names immediately followed by the first letter in the profession column enclosed in parenthesis.
+select city||'('||substr(state,1,1)||')',state from sales;  //Sam(D)  -- OUTPUT
+ ;   
+    
+//We are given a subscription table which consists of subscription start and end date for each user. 
+//We need to write a query that returns true/false for each user based on the overlapping of dates with other users. For instance,
+//If user1's subscription period overlaps with any other user the query must return True for user1.
+
+CREATE OR REPLACE TEMPORARY TABLE subscriptions(user_id varchar,start_date date,end_date date);
+
+insert into subscriptions(user_id,start_date,end_date) values
+('U1','2022-01-01','2022-01-31'),
+('U2','2022-01-16','2022-01-26'),
+('U3','2022-01-28','2022-02-06'),
+('U4','2022-02-16','2022-02-26');
+
+
+
+SELECT a.USER_ID  ,case when b.start_date is not null then 1 else 0 end as overlap
+FROM subscriptions A Left JOIN subscriptions B
+ON A.USER_ID != B.USER_ID
+AND A.START_DATE <= B.end_date
+AND A.END_DATE  >= B.START_DATE
+//group by a.USER_ID
+;
+
+
+    
+CREATE OR REPLACE TEMPORARY TABLE your_table(Employee_id varchar,Action_taken varchar,Created timestamp_ntz);
+
+insert into your_table(Employee_id,Action_taken,Created) values
+('1' ,'In', '2019-04-01 12:20:00'),
+('1' ,'Out', '2019-04-01 15:00:00'),
+('1' ,'In', '2019-04-01 17:00:00'),
+('1' ,'Out', '2019-04-01 18:00:00')
+;
+
+
+//total time spend in office in time only 
+select Employee_id , sum(timestampdiff(hour ,Created ,next_creat)) as total_time
+from(
+select * ,lead(Created,1,Created) over(partition by Employee_id order by Created) next_creat
+from your_table
+ )
+where Action_taken = 'In'
+group by Employee_id
+;
+
+
+select Employee_id , sum(timestampdiff(min,Created,next_create)) as total_count
+from(
+select * ,lead(Created) over (partition by Employee_id order by Created) as next_create
+from your_table 
+)
+where Action_taken = 'In'
+group by Employee_id
+;
+
+
+
+
+
+
+// how to remove the specal synatx between the words
+select replace(replace(replace(s,',','.,'),',.',''),'.,',',')
+from(
+select 'adadsad,,,fffff,,,,,dsdsaddsa,,,,,' as s from dual )
+;
+
+//split string 
+
+select substr(s,level,1),level 
+from(
+select 'ss unitech' as s from dual 
+)
+connect by prior level <len(s);
+
+//occarance of character 's'
+select len(s)-len(replace(s,'s',''))
+from(
+select 'ssunitech' as s from dual 
+  );
+
+
+//write a query to geneare 1-100 sequencw by cte 
+
+with cte(
+select '1' as t from dual
+  union all
+  select t+1 
+  from cte
+  where t<100
+)
+select * from cte;
+
+
+//----------------------------------------------------
+
+create or replace temporary table team(id number ,name varchar(20));
+
+insert into team values (1,'A');
+insert into team values (2,'B');
+insert into team values (3,'C');
+insert into team values (3,'D');
+
+
+// pivote 
+select * from(
+select id ,name
+from team 
+  )
+pivot
+(
+  sum(id) for id in (1,
+                     2,
+                     3)
+) as piv ;
+
+
+//
+
+select id , listagg(name,',') within group(order by name)
+from team 
+group by id
+order by id
+;
+          
+//file upload information 
+select metadata$filename,metadata$file_row_number,$1 from @CONS_INV_STG ;
+
+
+select name ,any_value(id) from team
+group by  name;
+
+
+//==================================================================
+
+
+
+
+CREATE OR REPLACE PROCEDURE "PROC_NATIONAL_PARENT_CNTRCT_EXCPTN_RPT"("BATCH_ID" VARCHAR(16777216), "FILE_ID" VARCHAR(16777216), "FILE_GROUP_ID" VARCHAR(16777216), "JOB_ID" VARCHAR(16777216))
+RETURNS VARIANT
+LANGUAGE JAVASCRIPT
+EXECUTE AS CALLER
+AS '
+   /********************************************************************************************                                                    
+** Name   :PROC_NATIONAL_PARENT_CNTRCT_EXCPTN_RPT
+** Desc   :This is a snowflake stored procedure which is responsible for loading the data FROM  PHCDW_PUB_COMMON.pub_sap_drct_sls_fct to National_Parent_Exception_report.xls
+** Auth   :CTS 
+** Date   :06/29/2021 (MM/DD/YYYYY)
+** Input  : BATCH_ID - it''s the batch id of the AWS Glue job
+**          FILE_ID - It''s the file Id 
+**          FILE_GROUP_ID - It''s a file group id
+** Output : A JSON response in before format -
+**            [
+**              {
+**                "DESC": "Store Procedure : PROC_NATIONAL_PARENT_CNTRCT_EXCPTN_RPT, Status : Successful",
+**                "DETAILS": [
+**                  {
+**                   "DELETECOUNT": 0,
+**                   "INSERTCOUNT": 0,
+**                   "TABLE":"National_Parent_Exception_report.xls",
+**                   "UPDATECOUNT": 0
+**                 }
+**               ],
+**               "NOTIFICATION": 1,
+**               "STATUS": 0
+**             }
+**           ]
+***********************************************************************************************       
+***********************************************************************************************       
+** Convention :
+**       “PROC_”[{SOURCESYSTEMCODE}]”_"{PRODUCTCODE}”_"{TYPEOFDATA}”_”{WKLY/DLY}_”{TARGETTABLE}”
+**      -  The name should be starting with “PROC” 
+**      -  followed by [{SOURCESYSTEMCODE}] like “PRM” , but it''s optional, 
+**      -  then {PRODUCTCODE} e.g, TKI
+** 		-  {TYPEOFDATA} -  like SLS for sales
+**      -  followed by frequency “WKLY”/” DLY”
+**      –  {TARGETTABLE}- target table name 
+**      -  Proc should be created in UPPER CASE
+**      -  All variables inside stored procedures should be in snakecase (lower case & separated by “_”).
+**      -  All local variables should start with lv_ and if global variables, they should start with gv_.
+**
+**
+**********************************************************************************************
+** Change History
+**********************************************************************************************
+** PR   Date        Author              Description 
+** --   --------   -------   ------------------------------------
+** 1   06/29/2022   CTS      loading the data FROM PHCDW_PUB_COMMON.pub_sap_drct_sls_fct to National_Parent_Exception_report.xls
+***********************************************************************************************/
+
+
+   /*--------------------standard variables that are used for auditing----------------*/
+
+    // this variable is used in passing the status code (0/-1) to audit table and also while sending JSON to caller. Initialized to -1 i.e. failure
+    var lv_status_cd = -1;
+    
+    // this variable is used in passing the status desc (success/Failure) to audit table and also while sending JSON to caller. Initialized to Failure
+    var lv_status_desc =", Status : Failure";
+    
+    // this variable is used in passing the response to caller in the form of JSON.
+    var lv_response_json = [];
+    
+    // this variable is used in passing the response to caller in the form of JSON.
+    var lv_result_json = {};
+    
+    // pass the procedure name here, this is used for auditing purpose
+    var lv_sp_name ="PROC_NATIONAL_PARENT_CNTRCT_EXCPTN_RPT"; 
+    
+    // call to  proc_phcdw_log_audit without bind information. actual parameters will be binded to thsi call after the DML is done.
+    var lv_audit_sql = "call phcdw_sys_common.proc_phcdw_log_audit(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+       
+    // number of records getting inserted on target table
+    var lv_ins_cnt = 0; 
+	
+	// number of records getting updated on target table
+    var lv_upd_cnt = 0; 
+	
+	// number of records getting deleted on target table
+	var lv_del_cnt = 0; 
+       
+    // Mandatory params. if no values, then throw exception   
+    var lv_mandatory_params_msg = "batch_id,file_id and file_group_id is mandatory";
+	
+	var result = "Store Procedure : ";
+	
+	var status_success = ", Status : Successful";
+	
+	var error_detail =  ", Error Details";
+                            
+	var lv_na = ''NA'';
+
+	var lv_y = "Y";
+    
+    var lv_e = '''';
+    
+    var lv_ep_nm =''Individual_Job'';
+    
+    var lv_job_nm = ''Job_National_Parent_cntrct_Excptn_Rpt'';
+    
+    var lv_isSuccess1 = 0;
+    
+    lv_isCloneSuccess =0;
+    
+    //This will hold the arrays for the ultimate JSON response
+    var lv_details_json = [];
+    var lv_details_array = {};
+    
+    //This is used for calling the UDF
+    var lv_table_array = {};
+    lv_counts_array = {};
+    
+    //variable for email notification
+    var lv_notification = 0;
+
+try {
+     // Declare and initialize start_time of the procedure
+     var lv_start_time_rs = snowflake.createStatement( { sqlText: `select current_timestamp()` } ).execute();
+     lv_start_time_rs.next();
+     var lv_start_time = lv_start_time_rs.getColumnValue(1);
+     
+     //declare and initialize start_time in varchar for time travel purpose 
+     var lv_tt_start_time_rs = snowflake.createStatement( { sqlText: `select to_char(current_timestamp())` } ).execute();
+     lv_tt_start_time_rs.next();
+     var lv_tt_start_time = lv_tt_start_time_rs.getColumnValue(1);
+       
+  /*---------------------Input Validation Starts (TBD)-----------------*/
+   
+    /*  if (BATCH_ID is null OR FILE_ID is null OR FILE_GROUP_ID is null){
+           throw lv_mandatory_params_msg;
+      } */
+         
+  /*---------------------Input Validation Ends------------------------*/
+  /*--------------------Main procedure logic starts -----------*/
+ 
+ 
+ /*------------------------------------------GETTING THE CONTEXT VARIABLE STARTS------------------------------------------------------------*/
+    
+     var stmt = snowflake.createStatement({sqlText: ''CALL phcdw_sys_common.GET_CONTEXT_VALUES(:1, :2)'',binds: [lv_ep_nm, lv_job_nm]});
+     var rs = stmt.execute();
+     while(rs.next()){
+            var lv_json_context_val= rs.getColumnValue(1); 
+}
+			
+			var Snowflake_pub_common_schema = lv_json_context_val[''Snowflake_pub_common_schema'']; 
+			var Phs_contract_list = lv_json_context_val[''Phs_contract_list'']; 
+			var Snowflake_pub_schema = lv_json_context_val[''Snowflake_pub_schema'']; 
+            var email_from = lv_json_context_val[''sender_email''];
+            var email_to = lv_json_context_val[''receiver_mail'']; 
+            var Snowflake_ma_pub_schema = lv_json_context_val[''Snowflake_ma_pub_schema''];
+			var Snowflake_cons_whc_schema= lv_json_context_val[''Snowflake_cons_whc_schema''];
+		     var whc_ord_dim=lv_json_context_val[''whc_ord_dim''];
+			 var Snowflake_pub_whc_schema=lv_json_context_val[''Snowflake_pub_whc_schema''];
+			 var sap_dir_prod_nm_lst=lv_json_context_val[''sap_dir_prod_nm_lst''];
+			 var ctrct_id_lst=lv_json_context_val[''ctrct_id_lst''];
+			 var sap_indir_prod_nm_lst=lv_json_context_val[''sap_indir_prod_nm_lst''];
+			 var FLGRPID=lv_json_context_val[''FLGRPID''];
+        
+
+     //target table name 
+     var lv_tbl_nm = ''National_Parent_Exception_report.xls'';
+
+
+  /*------------------------------------------GETTING THE CONTEXT VARIABLES ENDS-------------------------------------------------------*/
+  
+		var query_count_txt =`select count(*) from(
+								SELECT DISTINCT CASE WHEN (A.NATIONAL_PARENT is null or A.NATIONAL_PARENT=''NA'' OR A.NATIONAL_PARENT='''') THEN NP.NATIONAL_PARENT
+								ELSE A.NATIONAL_PARENT END AS NATIONAL_PARENT,
+									   A.SRC_ACCT_ID,
+									   A.src_sys_cd,
+									   A.SOLD_TO_NAME,
+									   A.ADDRESS,
+									   A.SOLD_TO_CITY,
+									   A.SOLD_TO_STATE,
+									   A.ZIP_CODE,
+									   A.PRODUCT_GROUP_DESCRIPTION,
+									   A.contract_num,
+									   A.CTRCT_NM,
+									   A.src_ctrct_desc
+								FROM (
+								select DISTINCT NATIONAL_PARENT,a.ACCT_NM AS SOLD_TO_NAME,SRC_CTRCT_ID as contract_num,CTRCT_NM,A.acct_id_sk,A.src_sys_cd,A.src_acct_id,a.PROD_NM AS PRODUCT_GROUP_DESCRIPTION,
+								latest_addr2.acct_addr_1 AS ADDRESS,
+								latest_addr2.acct_addr_city AS SOLD_TO_CITY,
+								latest_addr2.acct_addr_state as SOLD_TO_STATE, 
+								latest_addr2.acct_addr_zip AS ZIP_CODE, src_ctrct_desc from(	  
+									  SELECT BU_ID_SK,
+									   SRC_SYS_ID_SK,
+									   DATA_DT_ID_SK,
+									   prod_id_sk,
+									   CAST(MDM_PROD_ID_SK AS VARCHAR) AS MDM_PROD_ID_SK,
+									   ACCT_ID_SK,
+									   CTRCT_ID_SK,
+									   BU_NM,
+									   SRC_SYS_CD,
+									   REPORT_NM,
+									   SRC_ACCT_ID,
+									   ACCT_NM,
+									   SRC_CTRCT_ID,
+									   src_ctrct_desc,
+									   CTRCT_NM,
+									   PROD_NM,
+									   SRC_PROD_ID,
+									  NATIONAL_PARENT,
+									   GOVCAD,
+									   OWNER,
+									   REGION,
+									   SLS_QTY,
+								   ANS_AVG_YRLY_PRC,
+									   SLS_AMT,
+									   SLS_DT,
+									   SRC_TBL_NM,
+									   DATA_DT pyrpln_pyr_nm,
+									   pyrpln_pyr_typ,
+									   pyrpln_plan_typ from (
+								SELECT bu_dir.bu_id_sk,
+											 src_dir.src_sys_id_sk,
+											 tdim_dir.dt_id_sk AS data_dt_id_sk,
+											 fact_dir.prod_id_sk,
+											 CAST(brdg_dir.mdm_prod_id_sk AS VARCHAR) AS MDM_PROD_ID_SK,
+											 fact_dir.ship_to_acct_id_sk AS acct_id_sk,
+											 fact_dir.ctrct_id_sk,
+											 bu_dir.BU_NM,
+											 src_dir.SRC_SYS_CD,
+											 ''FEDERAL'' AS REPORT_NM,
+											 acct_dir.SRC_ACCT_ID,
+											 acct_dir.acct_nm,
+											 fact_dir.SRC_CTRcT_ID,
+											 ctr_dir.ctrct_ownr_nm AS CTRCT_NM,
+											 src_ctrct_desc,
+											 CASE
+											   WHEN prod_dir.prod_desc LIKE ''CIPRO ORAL%'' THEN ''CIPRO ORAL''
+											   WHEN prod_dir.prod_desc LIKE ''CLIMARA PRO%'' THEN ''CLIMARA PRO''
+											   ELSE prod_dir.src_prod_nm
+											 END AS prod_nm,
+											 prod_dir.src_prod_id,
+								CASE WHEN (clsf_dir.TOP_PRNT_CLS_CD = ''NA'' or clsf_dir.TOP_PRNT_CLS_CD is null or clsf_dir.TOP_PRNT_CLS_CD='''' or clsf_dir.TOP_PRNT_CLS_CD<>''IHS'' )  AND upper(ctr_dir.ctrct_ownr_nm) LIKE ''%FSS%'' THEN ''FSS/OGA''
+											   WHEN (clsf_dir.TOP_PRNT_CLS_CD = ''NA'' or clsf_dir.TOP_PRNT_CLS_CD is null or clsf_dir.TOP_PRNT_CLS_CD='''' or clsf_dir.TOP_PRNT_CLS_CD<>''IHS'')  AND upper(ctr_dir.ctrct_ownr_nm) LIKE ANY (''%P%H%S% IND%'',''%IHS%'') THEN ''IHS''
+											   WHEN (clsf_dir.TOP_PRNT_CLS_CD = ''NA'' or clsf_dir.TOP_PRNT_CLS_CD is null or clsf_dir.TOP_PRNT_CLS_CD='''' or clsf_dir.TOP_PRNT_CLS_CD<>''IHS'')  AND ((upper(ctr_dir.ctrct_ownr_nm) LIKE ANY (''%Afaxys%'',''%PHS%'',''%PUBLIC HEALTH SERVICE%'') OR upper(ctr_dir.src_ctrct_desc) LIKE ANY (''%Afaxys%'',''%PHS%'',''%PUBLIC HEALTH SERVICE%'') OR upper(ctr_dir.ctrct_ownr_nm) LIKE ANY (''%PHS%'')) AND NVL (upper(ctr_dir.ctrct_ownr_nm),''ABC'') NOT LIKE ''%JOSEPHS%'' AND NVL (upper(ctr_dir.src_ctrct_desc),''ABC'') NOT LIKE ''%JOSEPHS%'') THEN ''PHS''
+											   WHEN (clsf_dir.TOP_PRNT_CLS_CD = ''NA'' or clsf_dir.TOP_PRNT_CLS_CD is null or  clsf_dir.TOP_PRNT_CLS_CD='''' or clsf_dir.TOP_PRNT_CLS_CD<>''IHS'')  AND (upper(ctr_dir.ctrct_ownr_nm) LIKE ''%DoD%'' OR (upper(ctr_dir.ctrct_ownr_nm) LIKE ''%DoD%'' OR upper(ctr_dir.ctrct_ownr_nm) LIKE ANY (''%ARMY%'',''%NAVAL%'',''%AFB%''))) THEN ''DOD''
+											   WHEN (clsf_dir.TOP_PRNT_CLS_CD = ''NA'' or clsf_dir.TOP_PRNT_CLS_CD is null or clsf_dir.TOP_PRNT_CLS_CD='''' or clsf_dir.TOP_PRNT_CLS_CD<>''IHS'')  AND (upper(ctr_dir.ctrct_ownr_nm) LIKE ''%VETERANS%'' OR 
+											   upper(ctr_dir.src_ctrct_desc) LIKE ''%VETERANS%'' OR upper(ctr_dir.ctrct_ownr_nm) LIKE ''%VA%'' OR upper(ctr_dir.ctrct_ownr_nm) LIKE ''%VETERANS%'') THEN ''VA''  WHEN
+											   fact_dir.src_ctrct_id in (${Phs_contract_list})
+											   AND NVL(UPPER(clsf_dir.TOP_PRNT_CLS_CD),''ABC'') NOT IN (''DOD'',''VA'',''IHS'',''FED_PRISON'',''ICE'') then ''PHS'' 
+											   ELSE UPPER(clsf_dir.TOP_PRNT_CLS_CD)
+											 END AS NATIONAL_PARENT,
+											 nae_dir.GOVCAD AS GOVCAD,
+											 rae_dir.owner AS OWNER,
+											 rgn_dir.region AS Region,
+											 SUM(fact_dir.GROSS_SALES_QTY_SKU) AS sls_qty,
+											 0 AS ANS_AVG_YRLY_PRC,
+											 SUM(fact_dir.GROSS_GROSS_SALES) AS sls_amt,
+											 m_dir.day_dt AS sls_dt,
+											 ''phcdw_pub_common.pub_sap_drct_sls_fct'' AS SRC_TBL_NM,
+											 tdim_dir.day_dt AS data_dt,
+											 '''' AS pyrpln_pyr_nm,
+											 '''' AS pyrpln_pyr_typ,
+											 '''' AS pyrpln_plan_typ,
+											 '''' AS src_ord_fct_id
+									  FROM (SELECT bu_nm,
+												   bu_id_sk,
+												   src_sys_cd,
+												   data_src_id_sk,
+												   ship_to_acct_id_sk,
+												   MAX(src_ship_to_acct_id) AS src_ship_to_acct_id,
+												   MAX(prod_id_sk) AS prod_id_sk,
+												   SRC_PROD_NDC_CD,
+												   MAX(ord_id_sk) AS ord_id_sk,
+												   crtd_on_dt_id_sk,
+												   dsls_grs_grs_sls_amt AS GROSS_GROSS_SALES,
+												   dsls_grs_sls_sku_qty AS GROSS_SALES_QTY_SKU,
+												   MAX(ctrct_id_sk) AS ctrct_id_sk,
+												   MAX(src_ctrct_id) AS src_ctrct_id,
+												   data_dt_id_sk,
+												   DSLS_ITM_INVC_NUM,
+												   DSLS_ORIG_INVC_NUM,
+												   MAX(dsls_invc_num) AS dsls_invc_num
+											FROM ${Snowflake_pub_common_schema}.pub_sap_drct_sls_fct
+											GROUP BY 1,
+													 2,
+													 3,
+													 4,
+													 5,
+													 8,
+													 10,
+													 11,
+													 12,
+													 15,
+													 16,
+													 17) fact_dir
+									 LEFT JOIN ${Snowflake_pub_schema}.pub_bu_dim_vw bu_dir ON fact_dir.bu_nm = bu_dir.bu_nm
+								   LEFT JOIN ${Snowflake_pub_schema}.pub_src_sys_dim_vw src_dir ON fact_dir.src_sys_cd = src_dir.src_sys_cd
+								 LEFT JOIN ${Snowflake_pub_schema}.pub_time_dim_vw tdim_dir ON tdim_dir.dt_id_sk = fact_dir.data_dt_id_sk
+								  LEFT JOIN ${Snowflake_pub_schema}.pub_time_dim_vw AS m_dir ON fact_dir.crtd_on_dt_id_sk = m_dir.dt_id_sk
+								  LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MDM_ACCT_FLAT_all_bu bho_dir
+											   ON bho_dir.cons_acct_id_sk = fact_dir.ship_to_acct_id_sk
+											  AND bho_dir.src_sys_cd = fact_dir.src_sys_cd
+											  AND bho_dir.src_acct_addr_id = bho_dir.src_acct_id
+											  AND bho_dir.src_acct_addr_id = fact_dir.src_ship_to_acct_id
+										LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MDM_HCO_PRFL_TOP_PRNT_CLSSFCTN clsf_dir
+											   ON bho_dir.mdm_acct_bhoid = clsf_dir.bho_id
+											  AND UPPER(case when clsf_dir.top_prnt_cls_cd is null then '''' else clsf_dir.top_prnt_cls_cd end )<>''KAISER''
+										LEFT JOIN ${Snowflake_cons_whc_schema}.${whc_ord_dim} ordr_dir ON ordr_dir.ord_typ_rsn_id_sk = fact_dir.ord_id_sK
+										LEFT JOIN (SELECT prod_id_sk,
+													 src_sys_cd,
+													 bu_id_sk,
+													 UPPER(src_prod_nm) AS src_prod_nm,
+													 src_prod_id,
+													 MAX(prod_desc) AS prod_desc
+											  FROM ${Snowflake_ma_pub_schema}.PUB_PROD_PRFL_DIM_ALL_BU
+											  WHERE DATA_SRC_NM = ''SAP-ALL-DRCTSLS-DLY''
+											  GROUP BY 1,
+													   2,
+													   3,
+													   4,
+													   5) prod_dir
+										  ON prod_dir.PROD_ID_SK = fact_dir.PROD_ID_SK AND PROD_DIR.BU_ID_SK=FACT_DIR.BU_ID_SK
+										 AND fact_dir.src_sys_cd = prod_dir.src_sys_cd
+										LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_ACCT_PRFL_DIM_ALL_BU acct_dir
+										  ON acct_dir.src_acct_id = fact_dir.src_ship_to_acct_id
+										 AND acct_dir.src_sys_cd = fact_dir.src_sys_cd
+										 AND fact_dir.bu_nm = acct_dir.bu_nm
+										 AND fact_dir.bu_id_sk = acct_dir.bu_id_sk
+										LEFT JOIN (SELECT MAX(mdm_prod_id_sk) AS mdm_prod_id_sk,
+													 cons_prod_id_sk
+											  FROM ${Snowflake_ma_pub_schema}.pub_mdm_prod_brdg_dim_all_bu
+											  GROUP BY 2) brdg_dir ON brdg_dir.cons_prod_id_sk = fact_dir.prod_id_sk
+										LEFT JOIN ${Snowflake_pub_whc_schema}.pub_whc_ctrct_dim_vw ctr_dir ON ctr_dir.CTRCT_ID_SK = fact_dir.CTRCT_ID_SK
+										LEFT JOIN ${Snowflake_ma_pub_schema}.pub_ma_nae_algnmnt nae_dir ON UPPER (clsf_dir.TOP_PRNT_CLS_CD) = UPPER(nae_dir.national_parent)
+										LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MA_RGN_TO_ZIP_ALGNMNT rgn_dir ON bho_dir.acct_addr_zip = rgn_dir.zip
+										LEFT JOIN ${Snowflake_ma_pub_schema}.pub_ma_state_rae rae_dir ON rae_dir.sold_to_state = bho_dir.acct_addr_state
+									  WHERE prod_dir.src_prod_nm NOT IN (${sap_dir_prod_nm_lst})
+									  AND   ctr_dir.src_ctrct_id IN (${ctrct_id_lst}) and ctr_dir.data_src_nm=''SAP-ALL-DRCTSLS-DLY''
+									  GROUP by 1,
+											   2,
+											   3,
+											   4,
+											   5,
+											   6,
+											   7,
+											   8,
+											   9,
+											   10,
+											   11,
+											   12,
+											   13,
+											   14,
+											   15,
+											   16,
+											   17,
+											   18,
+											   19,
+											   20,
+											   21,
+											   23,
+											   25,
+											   26,
+											   27,
+											   28,
+											   29,
+											   30,31)  where NATIONAL_PARENT is null or NATIONAL_PARENT=''NA'' OR NATIONAL_PARENT=''''
+											   
+									  UNION ALL
+									  SELECT BU_ID_SK,
+									   SRC_SYS_ID_SK,
+									   DATA_DT_ID_SK,
+									   prod_id_sk,
+									   CAST(MDM_PROD_ID_SK AS VARCHAR) AS MDM_PROD_ID_SK,
+									   ACCT_ID_SK,
+									   CTRCT_ID_SK,
+									   BU_NM,
+									   SRC_SYS_CD,
+									   REPORT_NM,
+									   SRC_ACCT_ID,
+									   ACCT_NM,
+									   SRC_CTRCT_ID,
+									   src_ctrct_desc,
+									   CTRCT_NM,
+									   PROD_NM,
+									   SRC_PROD_ID,
+									  NATIONAL_PARENT,
+									   GOVCAD,
+									   OWNER,
+									   REGION,
+									   SLS_QTY,
+								   ANS_AVG_YRLY_PRC,
+									   SLS_AMT,
+									   SLS_DT,
+									   SRC_TBL_NM,
+									   DATA_DT pyrpln_pyr_nm,
+									   pyrpln_pyr_typ,
+									   pyrpln_plan_typ from (
+									  SELECT bu_indir.bu_id_sk,
+											 src_indir.src_sys_id_sk,
+											 tdim_indir.dt_id_sk AS data_dt_id_sk,
+											 fact_indir.prod_id_sk,
+											 CAST(fact_indir.mdm_prod_id_sk AS VARCHAR) AS MDM_PROD_ID_SK,
+											 fact_indir.acct_id_sk AS acct_id_sk,
+											 ctr_indir.ctrct_id_sk,
+											 bu_indir.BU_NM,
+											 src_indir.SRC_SYS_CD,
+											 ''FEDERAL'' AS REPORT_NM,
+											 acct_indir.SRC_ACCT_ID,
+											 acct_indir.acct_nm,
+											 fact_indir.SRC_CTRcT_ID,
+											 ctr_indir.ctrct_ownr_nm AS CTRCT_NM,
+											 src_ctrct_desc,
+											 CASE
+											   WHEN prod_indir.prod_desc LIKE ''BETAPACE AF%'' THEN ''BETAPACE AF''
+											   WHEN prod_indir.prod_desc LIKE ''CIPRO ORAL%'' THEN ''CIPRO ORAL''
+											   WHEN prod_indir.prod_desc LIKE ''CLIMARA PRO%'' THEN ''CLIMARA PRO''
+											   WHEN prod_indir.prod_desc LIKE ''CIPRO IV%'' THEN ''CIPRO IV''
+											   WHEN prod_indir.prod_desc LIKE ''ANGELIQ LO%'' THEN ''ANGELIQ LO''
+											   ELSE UPPER(prod_indir.src_prod_nm)
+											 END AS prod_nm,
+											 prod_indir.src_prod_id,
+										CASE WHEN (clsf_indir.TOP_PRNT_CLS_CD = ''NA'' or clsf_indir.TOP_PRNT_CLS_CD is null or clsf_indir.TOP_PRNT_CLS_CD='''' or clsf_indir.TOP_PRNT_CLS_CD<>''IHS'')  AND upper(ctr_indir.ctrct_ownr_nm) LIKE ''%FSS%'' THEN ''FSS/OGA''
+											   WHEN (clsf_indir.TOP_PRNT_CLS_CD = ''NA'' or clsf_indir.TOP_PRNT_CLS_CD is null or clsf_indir.TOP_PRNT_CLS_CD='''' or clsf_indir.TOP_PRNT_CLS_CD<>''IHS'')  AND upper(ctr_indir.ctrct_ownr_nm) LIKE ANY (''%P%H%S% IND%'',''%IHS%'') THEN ''IHS''
+											   WHEN (clsf_indir.TOP_PRNT_CLS_CD = ''NA'' or clsf_indir.TOP_PRNT_CLS_CD is null or clsf_indir.TOP_PRNT_CLS_CD=''''or clsf_indir.TOP_PRNT_CLS_CD<>''IHS'')  AND ((upper(ctr_indir.ctrct_ownr_nm) LIKE ANY (''%Afaxys%'',''%PHS%'',''%PUBLIC HEALTH SERVICE%'') OR upper(ctr_indir.src_ctrct_desc) LIKE ANY (''%Afaxys%'',''%PHS%'',''%PUBLIC HEALTH SERVICE%'') OR upper(ctr_indir.ctrct_ownr_nm) LIKE ANY (''%PHS%'')) AND NVL (upper(ctr_indir.ctrct_ownr_nm),''ABC'') NOT LIKE ''%JOSEPHS%'' AND NVL (upper(ctr_indir.src_ctrct_desc),''ABC'') NOT LIKE ''%JOSEPHS%'') THEN ''PHS''
+											   WHEN (clsf_indir.TOP_PRNT_CLS_CD = ''NA'' or clsf_indir.TOP_PRNT_CLS_CD is null or  clsf_indir.TOP_PRNT_CLS_CD='''' or clsf_indir.TOP_PRNT_CLS_CD<>''IHS'')  AND (upper(ctr_indir.ctrct_ownr_nm) LIKE ''%DoD%'' OR (upper(ctr_indir.ctrct_ownr_nm) LIKE ''%DoD%'' OR upper(ctr_indir.ctrct_ownr_nm) LIKE ANY (''%ARMY%'',''%NAVAL%'',''%AFB%''))) THEN ''DOD''
+											   WHEN (clsf_indir.TOP_PRNT_CLS_CD = ''NA'' or clsf_indir.TOP_PRNT_CLS_CD is null or clsf_indir.TOP_PRNT_CLS_CD=''''or clsf_indir.TOP_PRNT_CLS_CD<>''IHS'')  AND (upper(ctr_indir.ctrct_ownr_nm) LIKE ''%VETERANS%'' OR upper(ctr_indir.src_ctrct_desc) LIKE ''%VETERANS%'' OR upper(ctr_indir.ctrct_ownr_nm) LIKE ''%VA%'' OR upper(ctr_indir.ctrct_ownr_nm) LIKE ''%VETERANS%'') THEN ''VA'' WHEN
+											   fact_indir.src_ctrct_id in (${Phs_contract_list}) and NVL(UPPER(clsf_indir.TOP_PRNT_CLS_CD),''ABC'') NOT IN (''DOD'',''VA'',''IHS'',''FED_PRISON'',''ICE'') then ''PHS'' 
+											   ELSE UPPER(clsf_indir.TOP_PRNT_CLS_CD)
+											 END AS NATIONAL_PARENT,
+								nae_indir.GOVCAD AS GOVCAD,
+											 rae_indir.owner AS OWNER,
+											 rgn_indir.region AS Region,
+											 SUM(fact_indir.indsls_indrct_sls_qty) AS sls_qty,
+											 0 AS ANS_AVG_YRLY_PRC,
+											 SUM(fact_indir.indsls_dtrmnd_ctrct_sls_amt) AS sls_amt,
+											 m_indir.day_dt AS sls_dt,
+											 ''phcdw_pub_common.pub_sap_indrct_sls_fct'' AS SRC_TBL_NM,
+											 tdim_indir.day_dt AS data_dt,
+											 '''' AS pyrpln_pyr_nm,
+											 '''' AS pyrpln_pyr_typ,
+											 '''' AS pyrpln_plan_typ,
+											 '''' AS src_ord_fct_id
+									  FROM ${Snowflake_pub_common_schema}.pub_sap_indrct_sls_fct fact_indir
+										LEFT JOIN ${Snowflake_pub_schema}.pub_bu_dim_vw bu_indir ON fact_indir.bu_nm = bu_indir.bu_nm
+										LEFT JOIN ${Snowflake_pub_schema}.pub_src_sys_dim_vw src_indir ON fact_indir.src_sys_cd = src_indir.src_sys_cd
+										LEFT JOIN ${Snowflake_pub_schema}.pub_time_dim_vw tdim_indir ON tdim_indir.dt_id_sk = fact_indir.data_dt_id_sk
+										LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MDM_ACCT_FLAT_all_bu bho_indir
+											   ON bho_indir.cons_acct_id_sk = fact_indir.acct_id_sk
+											  AND bho_indir.src_sys_cd = fact_indir.src_sys_cd
+											  AND bho_indir.src_acct_addr_id = bho_indir.src_acct_id
+											  AND bho_indir.src_acct_addr_id = fact_indir.src_acct_id
+										LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MDM_HCO_PRFL_TOP_PRNT_CLSSFCTN clsf_indir
+											   ON bho_indir.mdm_acct_bhoid = clsf_indir.bho_id
+											  AND UPPER(case when clsf_indir.top_prnt_cls_cd is null then '''' else clsf_indir.top_prnt_cls_cd end )<>''KAISER''
+										LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_ACCT_PRFL_DIM_ALL_BU acct_indir
+										  ON acct_indir.acct_id_sk = fact_indir.acct_id_sk
+										 AND acct_indir.src_sys_cd = fact_indir.src_sys_cd
+										 AND fact_indir.bu_nm = acct_indir.bu_nm
+										 AND fact_indir.bu_id_sk = acct_indir.bu_id_sk
+										LEFT JOIN (SELECT prod_id_sk,
+													 src_sys_cd,
+													 bu_id_sk,
+													 UPPER(src_prod_nm) AS src_prod_nm,
+													 src_prod_id,
+													 MAX(prod_desc) AS prod_desc
+											  FROM ${Snowflake_ma_pub_schema}.PUB_PROD_PRFL_DIM_ALL_BU
+											  WHERE DATA_SRC_NM = ''SAP-ALL-INDRCTSLS-WKLY''
+											  GROUP BY 1,
+													   2,
+													   3,
+													   4,
+													   5) prod_indir
+										  ON prod_indir.PROD_ID_SK = fact_indir.PROD_ID_SK AND PROD_INDIR.BU_ID_SK=FACT_INDIR.BU_ID_SK
+										 AND fact_indir.src_sys_cd = prod_indir.src_sys_cd
+										LEFT JOIN (SELECT MAX(ctrct_id_sk) AS ctrct_id_sk,
+													 src_ctrct_id,
+													 MAX(ctrct_ownr_nm) AS ctrct_ownr_nm,SRC_CTRCT_DESC
+											  FROM ${Snowflake_pub_whc_schema}.pub_whc_ctrct_dim_vw
+											  where DATA_SRC_NM=''SAP-ALL-INDRCTSLS-WKLY''
+											  GROUP BY 2,4) ctr_indir ON ctr_indir.src_ctrct_id = fact_indir.src_ctrct_id
+										LEFT JOIN ${Snowflake_pub_schema}.pub_time_dim_vw AS m_indir ON fact_indir.whslr_usr_invc_dt_id_sk = m_indir.dt_id_sk
+										LEFT JOIN ${Snowflake_ma_pub_schema}.pub_ma_nae_algnmnt nae_indir ON UPPER (clsf_indir.TOP_PRNT_CLS_CD) = UPPER(nae_indir.national_parent)
+										LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MA_RGN_TO_ZIP_ALGNMNT rgn_indir ON bho_indir.acct_addr_zip = rgn_indir.zip
+										LEFT JOIN ${Snowflake_ma_pub_schema}.pub_ma_state_rae rae_indir ON rae_indir.sold_to_state = bho_indir.acct_addr_state
+									  WHERE ctr_indir.src_ctrct_id IN (${ctrct_id_lst})
+									  AND   prod_indir.SRC_PROD_nm NOT IN (${sap_indir_prod_nm_lst}) AND UPPER(case when clsf_indir.top_prnt_cls_cd is null then '''' else clsf_indir.top_prnt_cls_cd end )<>''KAISER''
+									  GROUP BY 1,
+											   2,
+											   3,
+											   4,
+											   5,
+											   6,
+											   7,
+											   8,
+											   9,
+											   10,
+											   11,
+											   12,
+											   13,
+											   14,
+											   15,
+											   16,
+											   17,
+												18,
+											   19,
+											   20,
+											   21,
+											   23,
+											   25,
+											   26,
+											   27,
+											   28,
+											   29,
+											   30,31)   where NATIONAL_PARENT is null or NATIONAL_PARENT=''NA'' OR NATIONAL_PARENT=''''
+											   ) A 
+								left join ${Snowflake_ma_pub_schema}.PUB_MDM_ACCT_FLAT_ALL_BU bho2 on bho2.cons_acct_id_sk=A.acct_id_sk 
+								AND BHO2.src_sys_cd=A.src_sys_cd  AND bho2.src_acct_id=A.src_acct_id
+								 left join(select cons_acct_id_sk, src_acct_id,src_acct_addr_id,src_sys_cd,acct_addr_1,acct_addr_city,acct_addr_state,acct_addr_zip from ${Snowflake_ma_pub_schema}.PUB_MDM_ACCT_FLAT_ALL_BU 
+								 where  rpt_acct_addr_id<>'''' and MDM_ACCT_ID_SK in(select max(MDM_ACCT_ID_SK) as MDM_ACCT_ID_SK from ${Snowflake_ma_pub_schema}.PUB_MDM_ACCT_FLAT_ALL_BU group by cons_acct_id_sk))
+								  latest_addr2 on latest_addr2.src_acct_id=A.src_acct_id and latest_addr2.src_sys_cd=A.src_sys_cd
+								)A
+								LEFT JOIN ${Snowflake_ma_pub_schema}.pub_ma_national_parent_ctrct NP
+								ON NVL(A.SRC_ACCT_ID,''ABC'')=NVL(NP.SRC_ACCT_ID,''ABC'')  AND A.SRC_SYS_CD=NP.SRC_SYS_CD AND NVL(A.PRODUCT_GROUP_DESCRIPTION,''ABC'')=NVL(NP.PRODUCT_GROUP_DESCRIPTION,''ABC'')
+								AND NVL(A.CONTRACT_NUM,''ABC'')=NVL(NP.CONTRACT_NUM,''ABC'') AND NVL(A.CTRCT_NM,''ABC'')=NVL(NP.CTRCT_NM,''ABC'') AND NVL(A.SRC_CTRCT_DESC,''ABC'')=NVL(NP.SRC_CTRCT_DESC,''ABC'')
+								) where NATIONAL_PARENT is null or  NATIONAL_PARENT=''NA'' OR  NATIONAL_PARENT='''';`; 
+                                  
+      
+      var query_count_rs = snowflake.execute({sqlText: query_count_txt}); 
+      query_count_rs.next(); 
+      var query_count = query_count_rs.getColumnValue(1);
+   /*---------------------------------------------- Creating a temp table Starts ---------------------------------------*/
+   
+   if(query_count>0 )
+   {
+   /*-----------------------------------------Email notification Starts ---------------------------------------------------*/
+   var sqlTempTableText = `CREATE OR REPLACE TEMPORARY TABLE phcdw_sys_common.PUB_MA_SLS_FCT_TEMP 
+                          (
+                          NATIONAL_PARENT	VARCHAR(100),
+                          SRC_ACCT_ID	VARCHAR(300),
+                          SRC_SYS_CD	VARCHAR(50),
+                          SOLD_TO_NAME	VARCHAR(300),
+                          ADDRESS	VARCHAR(150),
+                          SOLD_TO_CITY	VARCHAR(50),
+                          SOLD_TO_STATE	VARCHAR(2),
+                          ZIP_CODE	VARCHAR(50),
+                          PRODUCT_GROUP_DESCRIPTION	VARCHAR(100),
+                          CONTRACT_NUM	VARCHAR(50),
+                          CTRCT_NM	VARCHAR(100),
+                          SRC_CTRCT_DESC	VARCHAR(100)
+                            );`;
+  var lv_ctas_stmt = snowflake.createStatement({ sqlText: sqlTempTableText });
+  lv_ctas_stmt.execute();
+
+   /*---------------------------------------------- Creating a temp table Ends ---------------------------------------*/
+
+  /*-----------------------Inserting into a temp table Starts-------------------------*/
+     
+   var sqlInsertText = `INSERT INTO phcdw_sys_common.PUB_MA_SLS_FCT_TEMP
+							(
+							NATIONAL_PARENT,
+							SRC_ACCT_ID,
+							SRC_SYS_CD,
+							SOLD_TO_NAME,
+							ADDRESS,
+							SOLD_TO_CITY,
+							SOLD_TO_STATE,
+							ZIP_CODE,
+							PRODUCT_GROUP_DESCRIPTION,
+							CONTRACT_NUM,
+							CTRCT_NM,
+							SRC_CTRCT_DESC
+							)
+							select distinct NATIONAL_PARENT,SRC_ACCT_ID,src_sys_cd,SOLD_TO_NAME,ADDRESS,SOLD_TO_CITY,SOLD_TO_STATE,ZIP_CODE,PRODUCT_GROUP_DESCRIPTION,contract_num,CTRCT_NM, src_ctrct_desc from(
+							SELECT DISTINCT CASE WHEN (A.NATIONAL_PARENT is null or A.NATIONAL_PARENT=''NA'' OR A.NATIONAL_PARENT='''') THEN NP.NATIONAL_PARENT
+							ELSE A.NATIONAL_PARENT END AS NATIONAL_PARENT,
+								   A.SRC_ACCT_ID,
+								   A.src_sys_cd,
+								   A.SOLD_TO_NAME,
+								   A.ADDRESS,
+								   A.SOLD_TO_CITY,
+								   A.SOLD_TO_STATE,
+								   A.ZIP_CODE,
+								   A.PRODUCT_GROUP_DESCRIPTION,
+								   A.contract_num,
+								   A.CTRCT_NM,
+								   A.src_ctrct_desc
+							FROM (
+							select DISTINCT NATIONAL_PARENT,a.ACCT_NM AS SOLD_TO_NAME,SRC_CTRCT_ID as contract_num,CTRCT_NM,A.acct_id_sk,A.src_sys_cd,A.src_acct_id,a.PROD_NM AS PRODUCT_GROUP_DESCRIPTION,
+							latest_addr2.acct_addr_1 AS ADDRESS,
+							latest_addr2.acct_addr_city AS SOLD_TO_CITY,
+							latest_addr2.acct_addr_state as SOLD_TO_STATE, 
+							latest_addr2.acct_addr_zip AS ZIP_CODE, src_ctrct_desc from(	  
+								  SELECT BU_ID_SK,
+								   SRC_SYS_ID_SK,
+								   DATA_DT_ID_SK,
+								   prod_id_sk,
+								   CAST(MDM_PROD_ID_SK AS VARCHAR) AS MDM_PROD_ID_SK,
+								   ACCT_ID_SK,
+								   CTRCT_ID_SK,
+								   BU_NM,
+								   SRC_SYS_CD,
+								   REPORT_NM,
+								   SRC_ACCT_ID,
+								   ACCT_NM,
+								   SRC_CTRCT_ID,
+								   src_ctrct_desc,
+								   CTRCT_NM,
+								   PROD_NM,
+								   SRC_PROD_ID,
+								  NATIONAL_PARENT,
+								   GOVCAD,
+								   OWNER,
+								   REGION,
+								   SLS_QTY,
+							   ANS_AVG_YRLY_PRC,
+								   SLS_AMT,
+								   SLS_DT,
+								   SRC_TBL_NM,
+								   DATA_DT pyrpln_pyr_nm,
+								   pyrpln_pyr_typ,
+								   pyrpln_plan_typ from (
+							SELECT bu_dir.bu_id_sk,
+										 src_dir.src_sys_id_sk,
+										 tdim_dir.dt_id_sk AS data_dt_id_sk,
+										 fact_dir.prod_id_sk,
+										 CAST(brdg_dir.mdm_prod_id_sk AS VARCHAR) AS MDM_PROD_ID_SK,
+										 fact_dir.ship_to_acct_id_sk AS acct_id_sk,
+										 fact_dir.ctrct_id_sk,
+										 bu_dir.BU_NM,
+										 src_dir.SRC_SYS_CD,
+										 ''FEDERAL'' AS REPORT_NM,
+										 acct_dir.SRC_ACCT_ID,
+										 acct_dir.acct_nm,
+										 fact_dir.SRC_CTRcT_ID,
+										 ctr_dir.ctrct_ownr_nm AS CTRCT_NM,
+										 src_ctrct_desc,
+										 CASE
+										   WHEN prod_dir.prod_desc LIKE ''CIPRO ORAL%'' THEN ''CIPRO ORAL''
+										   WHEN prod_dir.prod_desc LIKE ''CLIMARA PRO%'' THEN ''CLIMARA PRO''
+										   ELSE prod_dir.src_prod_nm
+										 END AS prod_nm,
+										 prod_dir.src_prod_id,
+							CASE WHEN (clsf_dir.TOP_PRNT_CLS_CD = ''NA'' or clsf_dir.TOP_PRNT_CLS_CD is null or clsf_dir.TOP_PRNT_CLS_CD='''' or clsf_dir.TOP_PRNT_CLS_CD<>''IHS'' )  AND upper(ctr_dir.ctrct_ownr_nm) LIKE ''%FSS%'' THEN ''FSS/OGA''
+										   WHEN (clsf_dir.TOP_PRNT_CLS_CD = ''NA'' or clsf_dir.TOP_PRNT_CLS_CD is null or clsf_dir.TOP_PRNT_CLS_CD='''' or clsf_dir.TOP_PRNT_CLS_CD<>''IHS'')  AND upper(ctr_dir.ctrct_ownr_nm) LIKE ANY (''%P%H%S% IND%'',''%IHS%'') THEN ''IHS''
+										   WHEN (clsf_dir.TOP_PRNT_CLS_CD = ''NA'' or clsf_dir.TOP_PRNT_CLS_CD is null or clsf_dir.TOP_PRNT_CLS_CD='''' or clsf_dir.TOP_PRNT_CLS_CD<>''IHS'')  AND ((upper(ctr_dir.ctrct_ownr_nm) LIKE ANY (''%Afaxys%'',''%PHS%'',''%PUBLIC HEALTH SERVICE%'') OR upper(ctr_dir.src_ctrct_desc) LIKE ANY (''%Afaxys%'',''%PHS%'',''%PUBLIC HEALTH SERVICE%'') OR upper(ctr_dir.ctrct_ownr_nm) LIKE ANY (''%PHS%'')) AND NVL (upper(ctr_dir.ctrct_ownr_nm),''ABC'') NOT LIKE ''%JOSEPHS%'' AND NVL (upper(ctr_dir.src_ctrct_desc),''ABC'') NOT LIKE ''%JOSEPHS%'') THEN ''PHS''
+										   WHEN (clsf_dir.TOP_PRNT_CLS_CD = ''NA'' or clsf_dir.TOP_PRNT_CLS_CD is null or  clsf_dir.TOP_PRNT_CLS_CD='''' or clsf_dir.TOP_PRNT_CLS_CD<>''IHS'')  AND (upper(ctr_dir.ctrct_ownr_nm) LIKE ''%DoD%'' OR (upper(ctr_dir.ctrct_ownr_nm) LIKE ''%DoD%'' OR upper(ctr_dir.ctrct_ownr_nm) LIKE ANY (''%ARMY%'',''%NAVAL%'',''%AFB%''))) THEN ''DOD''
+										   WHEN (clsf_dir.TOP_PRNT_CLS_CD = ''NA'' or clsf_dir.TOP_PRNT_CLS_CD is null or clsf_dir.TOP_PRNT_CLS_CD='''' or clsf_dir.TOP_PRNT_CLS_CD<>''IHS'')  AND (upper(ctr_dir.ctrct_ownr_nm) LIKE ''%VETERANS%'' OR 
+										   upper(ctr_dir.src_ctrct_desc) LIKE ''%VETERANS%'' OR upper(ctr_dir.ctrct_ownr_nm) LIKE ''%VA%'' OR upper(ctr_dir.ctrct_ownr_nm) LIKE ''%VETERANS%'') THEN ''VA''  WHEN
+										   fact_dir.src_ctrct_id in (${Phs_contract_list})
+										   AND NVL(UPPER(clsf_dir.TOP_PRNT_CLS_CD),''ABC'') NOT IN (''DOD'',''VA'',''IHS'',''FED_PRISON'',''ICE'') then ''PHS'' 
+										   ELSE UPPER(clsf_dir.TOP_PRNT_CLS_CD)
+										 END AS NATIONAL_PARENT,
+										 nae_dir.GOVCAD AS GOVCAD,
+										 rae_dir.owner AS OWNER,
+										 rgn_dir.region AS Region,
+										 SUM(fact_dir.GROSS_SALES_QTY_SKU) AS sls_qty,
+										 0 AS ANS_AVG_YRLY_PRC,
+										 SUM(fact_dir.GROSS_GROSS_SALES) AS sls_amt,
+										 m_dir.day_dt AS sls_dt,
+										 ''phcdw_pub_common.pub_sap_drct_sls_fct'' AS SRC_TBL_NM,
+										 tdim_dir.day_dt AS data_dt,
+										 '''' AS pyrpln_pyr_nm,
+										 '''' AS pyrpln_pyr_typ,
+										 '''' AS pyrpln_plan_typ,
+										 '''' AS src_ord_fct_id
+								  FROM (SELECT bu_nm,
+											   bu_id_sk,
+											   src_sys_cd,
+											   data_src_id_sk,
+											   ship_to_acct_id_sk,
+											   MAX(src_ship_to_acct_id) AS src_ship_to_acct_id,
+											   MAX(prod_id_sk) AS prod_id_sk,
+											   SRC_PROD_NDC_CD,
+											   MAX(ord_id_sk) AS ord_id_sk,
+											   crtd_on_dt_id_sk,
+											   dsls_grs_grs_sls_amt AS GROSS_GROSS_SALES,
+											   dsls_grs_sls_sku_qty AS GROSS_SALES_QTY_SKU,
+											   MAX(ctrct_id_sk) AS ctrct_id_sk,
+											   MAX(src_ctrct_id) AS src_ctrct_id,
+											   data_dt_id_sk,
+											   DSLS_ITM_INVC_NUM,
+											   DSLS_ORIG_INVC_NUM,
+											   MAX(dsls_invc_num) AS dsls_invc_num
+										FROM ${Snowflake_pub_common_schema}.pub_sap_drct_sls_fct
+										GROUP BY 1,
+												 2,
+												 3,
+												 4,
+												 5,
+												 8,
+												 10,
+												 11,
+												 12,
+												 15,
+												 16,
+												 17) fact_dir
+								 LEFT   JOIN ${Snowflake_pub_schema}.pub_bu_dim_vw bu_dir ON fact_dir.bu_nm = bu_dir.bu_nm
+							   LEFT     JOIN ${Snowflake_pub_schema}.pub_src_sys_dim_vw src_dir ON fact_dir.src_sys_cd = src_dir.src_sys_cd
+							 LEFT       JOIN ${Snowflake_pub_schema}.pub_time_dim_vw tdim_dir ON tdim_dir.dt_id_sk = fact_dir.data_dt_id_sk
+							  LEFT      JOIN ${Snowflake_pub_schema}.pub_time_dim_vw AS m_dir ON fact_dir.crtd_on_dt_id_sk = m_dir.dt_id_sk
+							  LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MDM_ACCT_FLAT_all_bu bho_dir
+										   ON bho_dir.cons_acct_id_sk = fact_dir.ship_to_acct_id_sk
+										  AND bho_dir.src_sys_cd = fact_dir.src_sys_cd
+										  AND bho_dir.src_acct_addr_id = bho_dir.src_acct_id
+										  AND bho_dir.src_acct_addr_id = fact_dir.src_ship_to_acct_id
+									LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MDM_HCO_PRFL_TOP_PRNT_CLSSFCTN clsf_dir
+										   ON bho_dir.mdm_acct_bhoid = clsf_dir.bho_id
+										  AND UPPER(case when clsf_dir.top_prnt_cls_cd is null then '''' else clsf_dir.top_prnt_cls_cd end )<>''KAISER''
+									LEFT JOIN ${Snowflake_cons_whc_schema}.${whc_ord_dim} ordr_dir ON ordr_dir.ord_typ_rsn_id_sk = fact_dir.ord_id_sK
+									LEFT JOIN (SELECT prod_id_sk,
+												 src_sys_cd,
+												 bu_id_sk,
+												 UPPER(src_prod_nm) AS src_prod_nm,
+												 src_prod_id,
+												 MAX(prod_desc) AS prod_desc
+										  FROM ${Snowflake_ma_pub_schema}.PUB_PROD_PRFL_DIM_ALL_BU
+										  WHERE DATA_SRC_NM = ''SAP-ALL-DRCTSLS-DLY''
+										  GROUP BY 1,
+												   2,
+												   3,
+												   4,
+												   5) prod_dir
+									  ON prod_dir.PROD_ID_SK = fact_dir.PROD_ID_SK AND PROD_DIR.BU_ID_SK=FACT_DIR.BU_ID_SK
+									 AND fact_dir.src_sys_cd = prod_dir.src_sys_cd
+									LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_ACCT_PRFL_DIM_ALL_BU acct_dir
+									  ON acct_dir.src_acct_id = fact_dir.src_ship_to_acct_id
+									 AND acct_dir.src_sys_cd = fact_dir.src_sys_cd
+									 AND fact_dir.bu_nm = acct_dir.bu_nm
+									 LEFT JOIN (SELECT MAX(mdm_prod_id_sk) AS mdm_prod_id_sk,
+												 cons_prod_id_sk
+										  FROM ${Snowflake_ma_pub_schema}.pub_mdm_prod_brdg_dim_all_bu
+										  GROUP BY 2) brdg_dir ON brdg_dir.cons_prod_id_sk = fact_dir.prod_id_sk
+									LEFT JOIN ${Snowflake_pub_whc_schema}.pub_whc_ctrct_dim_vw ctr_dir ON ctr_dir.CTRCT_ID_SK = fact_dir.CTRCT_ID_SK
+									LEFT JOIN ${Snowflake_ma_pub_schema}.pub_ma_nae_algnmnt nae_dir ON UPPER (clsf_dir.TOP_PRNT_CLS_CD) = UPPER(nae_dir.national_parent)
+									LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MA_RGN_TO_ZIP_ALGNMNT rgn_dir ON bho_dir.acct_addr_zip = rgn_dir.zip
+									LEFT JOIN ${Snowflake_ma_pub_schema}.pub_ma_state_rae rae_dir ON rae_dir.sold_to_state = bho_dir.acct_addr_state
+								  WHERE prod_dir.src_prod_nm NOT IN (${sap_dir_prod_nm_lst})
+								  AND   ctr_dir.src_ctrct_id IN (${ctrct_id_lst}) and ctr_dir.data_src_nm=''SAP-ALL-DRCTSLS-DLY''
+								  GROUP by 1,
+										   2,
+										   3,
+										   4,
+										   5,
+										   6,
+										   7,
+										   8,
+										   9,
+										   10,
+										   11,
+										   12,
+										   13,
+										   14,
+										   15,
+										   16,
+										   17,
+										   18,
+										   19,
+										   20,
+										   21,
+										   23,
+										   25,
+										   26,
+										   27,
+										   28,
+										   29,
+										   30,31)  where NATIONAL_PARENT is null or NATIONAL_PARENT=''NA'' OR NATIONAL_PARENT=''''
+										   
+								  UNION ALL
+								  SELECT BU_ID_SK,
+								   SRC_SYS_ID_SK,
+								   DATA_DT_ID_SK,
+								   prod_id_sk,
+								   CAST(MDM_PROD_ID_SK AS VARCHAR) AS MDM_PROD_ID_SK,
+								   ACCT_ID_SK,
+								   CTRCT_ID_SK,
+								   BU_NM,
+								   SRC_SYS_CD,
+								   REPORT_NM,
+								   SRC_ACCT_ID,
+								   ACCT_NM,
+								   SRC_CTRCT_ID,
+								   src_ctrct_desc,
+								   CTRCT_NM,
+								   PROD_NM,
+								   SRC_PROD_ID,
+								  NATIONAL_PARENT,
+								   GOVCAD,
+								   OWNER,
+								   REGION,
+								   SLS_QTY,
+							   ANS_AVG_YRLY_PRC,
+								   SLS_AMT,
+								   SLS_DT,
+								   SRC_TBL_NM,
+								   DATA_DT pyrpln_pyr_nm,
+								   pyrpln_pyr_typ,
+								   pyrpln_plan_typ from (
+								  SELECT bu_indir.bu_id_sk,
+										 src_indir.src_sys_id_sk,
+										 tdim_indir.dt_id_sk AS data_dt_id_sk,
+										 fact_indir.prod_id_sk,
+										 CAST(fact_indir.mdm_prod_id_sk AS VARCHAR) AS MDM_PROD_ID_SK,
+										 fact_indir.acct_id_sk AS acct_id_sk,
+										 ctr_indir.ctrct_id_sk,
+										 bu_indir.BU_NM,
+										 src_indir.SRC_SYS_CD,
+										 ''FEDERAL'' AS REPORT_NM,
+										 acct_indir.SRC_ACCT_ID,
+										 acct_indir.acct_nm,
+										 fact_indir.SRC_CTRcT_ID,
+										 ctr_indir.ctrct_ownr_nm AS CTRCT_NM,
+										 src_ctrct_desc,
+										 CASE
+										   WHEN prod_indir.prod_desc LIKE ''BETAPACE AF%'' THEN ''BETAPACE AF''
+										   WHEN prod_indir.prod_desc LIKE ''CIPRO ORAL%'' THEN ''CIPRO ORAL''
+										   WHEN prod_indir.prod_desc LIKE ''CLIMARA PRO%'' THEN ''CLIMARA PRO''
+										   WHEN prod_indir.prod_desc LIKE ''CIPRO IV%'' THEN ''CIPRO IV''
+										   WHEN prod_indir.prod_desc LIKE ''ANGELIQ LO%'' THEN ''ANGELIQ LO''
+										   ELSE UPPER(prod_indir.src_prod_nm)
+										 END AS prod_nm,
+										 prod_indir.src_prod_id,
+									CASE WHEN (clsf_indir.TOP_PRNT_CLS_CD = ''NA'' or clsf_indir.TOP_PRNT_CLS_CD is null or clsf_indir.TOP_PRNT_CLS_CD='''' or clsf_indir.TOP_PRNT_CLS_CD<>''IHS'')  AND upper(ctr_indir.ctrct_ownr_nm) LIKE ''%FSS%'' THEN ''FSS/OGA''
+										   WHEN (clsf_indir.TOP_PRNT_CLS_CD = ''NA'' or clsf_indir.TOP_PRNT_CLS_CD is null or clsf_indir.TOP_PRNT_CLS_CD='''' or clsf_indir.TOP_PRNT_CLS_CD<>''IHS'')  AND upper(ctr_indir.ctrct_ownr_nm) LIKE ANY (''%P%H%S% IND%'',''%IHS%'') THEN ''IHS''
+										   WHEN (clsf_indir.TOP_PRNT_CLS_CD = ''NA'' or clsf_indir.TOP_PRNT_CLS_CD is null or clsf_indir.TOP_PRNT_CLS_CD=''''or clsf_indir.TOP_PRNT_CLS_CD<>''IHS'')  AND ((upper(ctr_indir.ctrct_ownr_nm) LIKE ANY (''%Afaxys%'',''%PHS%'',''%PUBLIC HEALTH SERVICE%'') OR upper(ctr_indir.src_ctrct_desc) LIKE ANY (''%Afaxys%'',''%PHS%'',''%PUBLIC HEALTH SERVICE%'') OR upper(ctr_indir.ctrct_ownr_nm) LIKE ANY (''%PHS%'')) AND NVL (upper(ctr_indir.ctrct_ownr_nm),''ABC'') NOT LIKE ''%JOSEPHS%'' AND NVL (upper(ctr_indir.src_ctrct_desc),''ABC'') NOT LIKE ''%JOSEPHS%'') THEN ''PHS''
+										   WHEN (clsf_indir.TOP_PRNT_CLS_CD = ''NA'' or clsf_indir.TOP_PRNT_CLS_CD is null or  clsf_indir.TOP_PRNT_CLS_CD='''' or clsf_indir.TOP_PRNT_CLS_CD<>''IHS'')  AND (upper(ctr_indir.ctrct_ownr_nm) LIKE ''%DoD%'' OR (upper(ctr_indir.ctrct_ownr_nm) LIKE ''%DoD%'' OR upper(ctr_indir.ctrct_ownr_nm) LIKE ANY (''%ARMY%'',''%NAVAL%'',''%AFB%''))) THEN ''DOD''
+										   WHEN (clsf_indir.TOP_PRNT_CLS_CD = ''NA'' or clsf_indir.TOP_PRNT_CLS_CD is null or clsf_indir.TOP_PRNT_CLS_CD=''''or clsf_indir.TOP_PRNT_CLS_CD<>''IHS'')  AND (upper(ctr_indir.ctrct_ownr_nm) LIKE ''%VETERANS%'' OR upper(ctr_indir.src_ctrct_desc) LIKE ''%VETERANS%'' OR upper(ctr_indir.ctrct_ownr_nm) LIKE ''%VA%'' OR upper(ctr_indir.ctrct_ownr_nm) LIKE ''%VETERANS%'') THEN ''VA'' WHEN
+										   fact_indir.src_ctrct_id in (${Phs_contract_list}) and NVL(UPPER(clsf_indir.TOP_PRNT_CLS_CD),''ABC'') NOT IN (''DOD'',''VA'',''IHS'',''FED_PRISON'',''ICE'') then ''PHS'' 
+										   ELSE UPPER(clsf_indir.TOP_PRNT_CLS_CD)
+										 END AS NATIONAL_PARENT,
+							nae_indir.GOVCAD AS GOVCAD,
+										 rae_indir.owner AS OWNER,
+										 rgn_indir.region AS Region,
+										 SUM(fact_indir.indsls_indrct_sls_qty) AS sls_qty,
+										 0 AS ANS_AVG_YRLY_PRC,
+										 SUM(fact_indir.indsls_dtrmnd_ctrct_sls_amt) AS sls_amt,
+										 m_indir.day_dt AS sls_dt,
+										 ''phcdw_pub_common.pub_sap_indrct_sls_fct'' AS SRC_TBL_NM,
+										 tdim_indir.day_dt AS data_dt,
+										 '''' AS pyrpln_pyr_nm,
+										 '''' AS pyrpln_pyr_typ,
+										 '''' AS pyrpln_plan_typ,
+										 '''' AS src_ord_fct_id
+								  FROM ${Snowflake_pub_common_schema}.pub_sap_indrct_sls_fct fact_indir
+									LEFT JOIN ${Snowflake_pub_schema}.pub_bu_dim_vw bu_indir ON fact_indir.bu_nm = bu_indir.bu_nm
+									LEFT JOIN ${Snowflake_pub_schema}.pub_src_sys_dim_vw src_indir ON fact_indir.src_sys_cd = src_indir.src_sys_cd
+									LEFT JOIN ${Snowflake_pub_schema}.pub_time_dim_vw tdim_indir ON tdim_indir.dt_id_sk = fact_indir.data_dt_id_sk
+									LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MDM_ACCT_FLAT_all_bu bho_indir
+										   ON bho_indir.cons_acct_id_sk = fact_indir.acct_id_sk
+										  AND bho_indir.src_sys_cd = fact_indir.src_sys_cd
+										  AND bho_indir.src_acct_addr_id = bho_indir.src_acct_id
+										  AND bho_indir.src_acct_addr_id = fact_indir.src_acct_id
+									LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MDM_HCO_PRFL_TOP_PRNT_CLSSFCTN clsf_indir
+										   ON bho_indir.mdm_acct_bhoid = clsf_indir.bho_id
+										  AND UPPER(case when clsf_indir.top_prnt_cls_cd is null then '''' else clsf_indir.top_prnt_cls_cd end )<>''KAISER''
+									LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_ACCT_PRFL_DIM_ALL_BU acct_indir
+									  ON acct_indir.acct_id_sk = fact_indir.acct_id_sk
+									 AND acct_indir.src_sys_cd = fact_indir.src_sys_cd
+									 AND fact_indir.bu_nm = acct_indir.bu_nm
+									 LEFT JOIN (SELECT prod_id_sk,
+												 src_sys_cd,
+												 bu_id_sk,
+												 UPPER(src_prod_nm) AS src_prod_nm,
+												 src_prod_id,
+												 MAX(prod_desc) AS prod_desc
+										  FROM ${Snowflake_ma_pub_schema}.PUB_PROD_PRFL_DIM_ALL_BU
+										  WHERE DATA_SRC_NM = ''SAP-ALL-INDRCTSLS-WKLY''
+										  GROUP BY 1,
+												   2,
+												   3,
+												   4,
+												   5) prod_indir
+									  ON prod_indir.PROD_ID_SK = fact_indir.PROD_ID_SK AND PROD_INDIR.BU_ID_SK=FACT_INDIR.BU_ID_SK
+									 AND fact_indir.src_sys_cd = prod_indir.src_sys_cd
+									LEFT JOIN (SELECT MAX(ctrct_id_sk) AS ctrct_id_sk,
+												 src_ctrct_id,
+												 MAX(ctrct_ownr_nm) AS ctrct_ownr_nm,SRC_CTRCT_DESC
+										  FROM ${Snowflake_pub_whc_schema}.pub_whc_ctrct_dim_vw
+										  where DATA_SRC_NM=''SAP-ALL-INDRCTSLS-WKLY''
+										  GROUP BY 2,4) ctr_indir ON ctr_indir.src_ctrct_id = fact_indir.src_ctrct_id
+									LEFT JOIN ${Snowflake_pub_schema}.pub_time_dim_vw AS m_indir ON fact_indir.whslr_usr_invc_dt_id_sk = m_indir.dt_id_sk
+									LEFT JOIN ${Snowflake_ma_pub_schema}.pub_ma_nae_algnmnt nae_indir ON UPPER (clsf_indir.TOP_PRNT_CLS_CD) = UPPER(nae_indir.national_parent)
+									LEFT JOIN ${Snowflake_ma_pub_schema}.PUB_MA_RGN_TO_ZIP_ALGNMNT rgn_indir ON bho_indir.acct_addr_zip = rgn_indir.zip
+									LEFT JOIN ${Snowflake_ma_pub_schema}.pub_ma_state_rae rae_indir ON rae_indir.sold_to_state = bho_indir.acct_addr_state
+								  WHERE ctr_indir.src_ctrct_id IN (${ctrct_id_lst})
+								  AND   prod_indir.SRC_PROD_nm NOT IN (${sap_indir_prod_nm_lst}) AND UPPER(case when clsf_indir.top_prnt_cls_cd is null then '''' else clsf_indir.top_prnt_cls_cd end )<>''KAISER''
+								  GROUP BY 1,
+										   2,
+										   3,
+										   4,
+										   5,
+										   6,
+										   7,
+										   8,
+										   9,
+										   10,
+										   11,
+										   12,
+										   13,
+										   14,
+										   15,
+										   16,
+										   17,
+											18,
+										   19,
+										   20,
+										   21,
+										   23,
+										   25,
+										   26,
+										   27,
+										   28,
+										   29,
+										   30,31)   where NATIONAL_PARENT is null or NATIONAL_PARENT=''NA'' OR NATIONAL_PARENT=''''
+										   ) A 
+							left join ${Snowflake_ma_pub_schema}.PUB_MDM_ACCT_FLAT_ALL_BU bho2 on bho2.cons_acct_id_sk=A.acct_id_sk 
+							AND BHO2.src_sys_cd=A.src_sys_cd  AND bho2.src_acct_id=A.src_acct_id
+							 left join(select cons_acct_id_sk, src_acct_id,src_acct_addr_id,src_sys_cd,acct_addr_1,acct_addr_city,acct_addr_state,acct_addr_zip from ${Snowflake_ma_pub_schema}.PUB_MDM_ACCT_FLAT_ALL_BU 
+							 where  rpt_acct_addr_id<>'''' and MDM_ACCT_ID_SK in(select max(MDM_ACCT_ID_SK) as MDM_ACCT_ID_SK from ${Snowflake_ma_pub_schema}.PUB_MDM_ACCT_FLAT_ALL_BU group by cons_acct_id_sk))
+							  latest_addr2 on latest_addr2.src_acct_id=A.src_acct_id and latest_addr2.src_sys_cd=A.src_sys_cd
+							)A
+							LEFT JOIN ${Snowflake_ma_pub_schema}.pub_ma_national_parent_ctrct NP
+							ON NVL(A.SRC_ACCT_ID,''ABC'')=NVL(NP.SRC_ACCT_ID,''ABC'')  AND A.SRC_SYS_CD=NP.SRC_SYS_CD AND NVL(A.PRODUCT_GROUP_DESCRIPTION,''ABC'')=NVL(NP.PRODUCT_GROUP_DESCRIPTION,''ABC'')
+							AND NVL(A.CONTRACT_NUM,''ABC'')=NVL(NP.CONTRACT_NUM,''ABC'') AND NVL(A.CTRCT_NM,''ABC'')=NVL(NP.CTRCT_NM,''ABC'') AND NVL(A.SRC_CTRCT_DESC,''ABC'')=NVL(NP.SRC_CTRCT_DESC,''ABC'')
+							) where NATIONAL_PARENT is null or  NATIONAL_PARENT=''NA'' OR  NATIONAL_PARENT='''';`;
+                              
+   var temp_load = snowflake.execute({sqlText : sqlInsertText,binds:[BATCH_ID,JOB_ID,lv_start_time]});
+   temp_load.next();
+  
+   /*------------------------Inserting into a temp table Ends---------------*/ 
+   
+   
+                              
+  /*------------------------------------------GETTING THE OTHER PARAM VARIABLES------------------------------------------------------------*/
+
+    var stmt = snowflake.createStatement({sqlText: `CALL PHCDW_SYS_COMMON.PROC_PHCDW_SYS_VALUES(:1, :2)`,binds: [lv_ep_nm, lv_job_nm]});
+    var rs = stmt.execute();
+    while(rs.next()){
+    var lv_json_othr_param_val= rs.getColumnValue(1);
+    }
+     var file_name = lv_json_othr_param_val["file_name"];
+     
+     var query_data = `select 
+''NATIONAL_PARENT'' as NATIONAL_PARENT,
+''SRC_ACCT_ID'' AS SRC_ACCT_ID,
+''SRC_SYS_CD'' AS SRC_SYS_CD,
+''SOLD_TO_NAME'' AS SOLD_TO_NAME,
+''ADDRESS'' AS ADDRESS,
+''SOLD_TO_CITY'' AS SOLD_TO_CITY,
+''SOLD_TO_STATE'' AS SOLD_TO_STATE,
+''ZIP_CODE'' AS ZIP_CODE,
+''PRODUCT_GROUP_DESCRIPTION'' AS PRODUCT_GROUP_DESCRIPTION,
+''CONTRACT_NUM'' AS CONTRACT_NUM,
+''CTRCT_NM'' AS CTRCT_NM,
+''SRC_CTRCT_DESC'' AS SRC_CTRCT_DESC 
+UNION ALL 
+select NATIONAL_PARENT,SRC_ACCT_ID,SRC_SYS_CD,
+		SOLD_TO_NAME,
+		ADDRESS,
+		SOLD_TO_CITY,
+		SOLD_TO_STATE,
+		ZIP_CODE,
+		PRODUCT_GROUP_DESCRIPTION,
+		CONTRACT_NUM,
+		CTRCT_NM,
+		SRC_CTRCT_DESC from phcdw_sys_common.PUB_MA_SLS_FCT_TEMP`;
+
+    var lv_s3_upload_stmt =`CALL PROC_S3_FILE_UPLOAD(:1,:2,''CSV'',''.xls'',:3,:4)`;
+
+    var lv_s3_upload_rs = snowflake.execute({sqlText: lv_s3_upload_stmt, binds:[lv_ep_nm,lv_job_nm,file_name,query_data]});
+    lv_s3_upload_rs.next();
+    var lv_stage_path = lv_s3_upload_rs.getColumnValue(1);
+
+  /*---------------------------------------------------S3_UPLOAD_ENDS----------------------------------------------------------------------*/
+ 
+   /*-----------------------------------------Email notification Starts ---------------------------------------------------*/
+    var lv_email_success = '''';
+      var mail_status = ''''; 
+    
+         
+      var attachment_flg =''Y'';
+
+        lv_email_stmt = `call phcdw_sys_common.PROC_PHCDW_EMAIL_NOTIFICATION(:1,:2,:3,:4,:5,:6,:7,:8,array_construct(''National_Parent_Exception_report''));`;
+        var lv_mail_rs = snowflake.execute({sqlText: lv_email_stmt, binds: [FILE_GROUP_ID,lv_ep_nm,lv_job_nm,''SUCCESS'',attachment_flg,BATCH_ID,'''','''']});
+        while (lv_mail_rs.next())
+              {
+                  mail_status = lv_mail_rs.getColumnValue(1);
+              }
+           if(mail_status == ''successful'')
+              {
+                  lv_notification=1;
+              }
+           else
+              {
+                  lv_notification = -1;
+              }
+  /*-----------------------------------------Email notification ENDS ---------------------------------------------------*/
+  }
+  else
+  {
+   var lv_email_success = '''';
+      var mail_status = ''''; 
+    
+         
+      var attachment_flg =''N'';
+
+        lv_email_stmt = `call phcdw_sys_common.PROC_PHCDW_EMAIL_NOTIFICATION(:1,:2,:3,:4,:5,:6,:7,:8,array_construct(''''));`;
+        var lv_mail_rs = snowflake.execute({sqlText: lv_email_stmt, binds: [FILE_GROUP_ID,lv_ep_nm,lv_job_nm,''DEFAULT'',attachment_flg,BATCH_ID,'''','''']});
+        while (lv_mail_rs.next())
+              {
+                  mail_status = lv_mail_rs.getColumnValue(1);
+              }
+           if(mail_status == ''successful'')
+              {
+                  lv_notification=1;
+              }
+           else
+              {
+                  lv_notification = -1;
+              }
+ 
+  }
+  /*-----------------------------------------Email notification ENDS ---------------------------------------------------*/
+
+  /*--------------------------------------INSERTING COUNTS INTO TABLE ARRAY STARTS--------------------------------------*/ 
+   
+   lv_counts_array["INSERTCOUNT"] = lv_ins_cnt;
+   lv_counts_array["UPDATECOUNT"] = lv_upd_cnt;
+   lv_counts_array["DELETECOUNT"] = lv_del_cnt;
+   lv_counts_array["TABLE"] = lv_tbl_nm;
+   lv_table_array["table1"] = lv_counts_array;
+   lv_counts_array = {};
+   
+   /*--------------------------------------INSERTING COUNTS INTO TABLE ARRAY ENDS--------------------------------------*/ 
+   
+   lv_status_cd = 0;
+   lv_status_desc = result+ lv_sp_name + status_success;
+   
+   //Declare and initialize end_time of the procedure
+     var lv_end_time_rs = snowflake.createStatement({ sqlText: `select current_timestamp()`}).execute();
+     lv_end_time_rs.next();
+     var lv_end_time = lv_end_time_rs.getColumnValue(1);
+   
+   /*----------------------------------------UDF, GRANTS, AUDIT PROC CALL STARTS---------------------------------------*/
+  
+  
+  for(var i in lv_table_array){
+  
+  //UDF call
+  var stmt = snowflake.createStatement({sqlText: ''SELECT phcdw_sys_common.RESPONSE_JSON(:1, :2, :3, :4)'',binds: [lv_table_array[i]["TABLE"], lv_table_array[i]["INSERTCOUNT"], lv_table_array[i]["UPDATECOUNT"], lv_table_array[i]["DELETECOUNT"]]});
+     var rs = stmt.execute();
+     while(rs.next()){
+            lv_details_array = rs.getColumnValue(1); 
+     }
+   lv_details_json.push(lv_details_array); 
+
+     
+    //audit procedure call 
+    var lv_call_audit_proc = snowflake.createStatement({sqlText: lv_audit_sql,
+                                binds: [BATCH_ID, FILE_ID,FILE_GROUP_ID,lv_sp_name,lv_table_array[i]["INSERTCOUNT"],lv_table_array[i]["UPDATECOUNT"], lv_status_cd, lv_status_desc,lv_start_time, lv_end_time,0,"","","", lv_table_array[i]["DELETECOUNT"], JOB_ID]}); 
+     lv_call_audit_proc.execute(); 
+       
+   }
+                            
+                      
+
+  /*--------------------------------------UDF, GRANTS, AUDIT PROC CALL ENDS----------------------------------*/    
+
+
+     //send success information status code and status desc to JSON
+     lv_result_json["STATUS"]=lv_status_cd;
+     lv_result_json["DESC"]=lv_status_desc;
+     lv_result_json["NOTIFICATION"]=lv_notification;     
+     lv_result_json["DETAILS"]=lv_details_json;
+
+
+  /*--------------------Main procedure logic ends ----------------*/
+  }
+  /*--------------------Exception block----------------*/ 
+
+  catch(err)
+ {
+             
+                            
+//    if(lv_isSuccess1 > 0){
+//        var lv_sqlTimeTravelText = `CREATE OR REPLACE TABLE ${Snowflake_ma_pub_schema}.${tgt_table_name} AS 
+//                                    SELECT * FROM ${Snowflake_ma_pub_schema}.${tgt_table_name} AT (timestamp => ''${lv_tt_start_time}''::timestamp_ltz);`; 
+//                                    
+//        var lv_tt_rs = snowflake.execute({sqlText: lv_sqlTimeTravelText});
+//       lv_tt_rs.next();  
+//        }
+                   
+     //Assign and send fail information status code and status desc to JSON
+       lv_ins_cnt = 0;
+       lv_upd_cnt = 0;
+	   lv_del_cnt = 0;
+       lv_status_desc = result+lv_sp_name + lv_status_desc;
+       lv_details_json = [];                                 
+       lv_details_array = {};
+       lv_notification = 0;
+       
+   /*--------------------------------------INSERTING COUNTS INTO TABLE ARRAY STARTS--------------------------------------*/     
+    /*-------------------------------------UDF CALL, GRANTS STARTS----------------------------------*/
+                                        
+   for(var i in lv_table_array){
+                                        
+  //UDF CALL                                      
+  var stmt = snowflake.createStatement({sqlText: ''SELECT phcdw_sys_common.RESPONSE_JSON(:1, :2, :3, :4)'',binds: [lv_table_array[i]["TABLE"], lv_table_array[i]["INSERTCOUNT"], lv_table_array[i]["UPDATECOUNT"], lv_table_array[i]["DELETECOUNT"]]});
+     var rs = stmt.execute();
+     while(rs.next()){
+            lv_details_array = rs.getColumnValue(1); 
+     }
+     
+   lv_details_json.push(lv_details_array); 
+                                        
+                       
+	                           
+                                        
+   }       
+                            
+                                        
+
+  /*-------------------------------------UDF CALL, GRANTS ENDS----------------------------------*/   
+      
+//      lv_details_array = {};
+	   
+		lv_result_json["STATUS"]=lv_status_cd;
+		lv_result_json["DESC"]= lv_status_desc + error_detail + err.code +" "+ err.state +" "+ err.stackTraceTxt ;
+        lv_result_json["NOTIFICATION"]=lv_notification;  
+        lv_result_json["DETAILS"]=lv_details_json;
+       
+       
+       
+       
+          //Declare and initialize end_time of the procedure
+       var lv_end_time_rs = snowflake.createStatement( { sqlText: `select current_timestamp()` } ).execute();
+       lv_end_time_rs.next();
+       var lv_end_time = lv_end_time_rs.getColumnValue(1);
+
+          
+        //call audit procedure with parameters
+       var lv_call_audit_proc = snowflake.createStatement({sqlText: lv_audit_sql,
+       binds: [BATCH_ID, FILE_ID,FILE_GROUP_ID,lv_sp_name,lv_ins_cnt,lv_upd_cnt, lv_status_cd, lv_status_desc,lv_start_time, lv_end_time, err.code,err.state, "", err.stackTraceTxt, lv_del_cnt, JOB_ID]}); 
+        lv_call_audit_proc.execute(); 
+                   
+                            
+    }
+    
+                            
+lv_response_json.push(lv_result_json);  
+return lv_response_json;                           
+
+ 
+ ';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
