@@ -1,0 +1,216 @@
+
+
+Snowflake Track EP Owner:
+https://cognizantonline.sharepoint.com/:x:/r/sites/BayerCyrusCognizant/_layouts/15/Doc.aspx?sourcedoc=%7BEB96CFB2-A0ED-4247-B8C6-B3B4D995D683%7D&file=Snowflack%20Track%20-%20EP%20Owners.xlsx&action=default&mobileredirect=true&cid=6b2d50f6-868a-4ac4-867a-91519c0ad4cd
+
+Snowflake status tracker :
+https://cognizantonline.sharepoint.com/:x:/r/sites/BayerCyrusCognizant/_layouts/15/Doc.aspx?sourcedoc=%7BB57EA1D0-8858-4515-A54B-C4EDD6DB3EEB%7D&file=CyrusSTTMStoredProcedurePlans_v2-Revised.xlsm&action=default&mobileredirect=true&cid=47c16e0f-0fb7-4942-8be2-426caea38fe0
+
+Locaton for latest Snowflake Procedures :
+https://cognizantonline.sharepoint.com/:f:/r/sites/BayerCyrusCognizant/Shared%20Documents/General/Cyrus-Repository/Implementation/Database/SF-Code-Check-In?csf=1&web=1&e=4BAr7o
+
+Location of STTM:
+https://cognizantonline.sharepoint.com/:f:/r/sites/BayerCyrusCognizant/Shared%20Documents/General/talend%20STTM?csf=1&web=1&e=2g2Bv4
+
+Location of old proc in Snowflake :
+https://cognizantonline.sharepoint.com/:f:/r/sites/BayerCyrusCognizant/Shared%20Documents/General/Snowflake/03-Development?csf=1&web=1&e=gUTPMk 
+
+Team 3 Tracker :-
+https://cognizantonline.sharepoint.com/:x:/s/BayerCyrusCognizant/EQMFVNDE_uVFpvgXBvOs3IQBe_1js1xpoLPv3OIK_pOLww?e=kNqsf4
+
+
+EP OWNER FILE /New table not available on Dev :
+https://cognizantonline.sharepoint.com/sites/BayerCyrusCognizant/_layouts/15/Doc.aspx?sourcedoc=%7BEB96CFB2-A0ED-4247-B8C6-B3B4D995D683%7D&file=Snowflack%20Track%20-%20EP%20Owners.xlsx&action=default&mobileredirect=true&cid=6b2d50f6-868a-4ac4-867a-91519c0ad4cd
+
+snowflake link :
+https://bayer_cphcdp_nonprod.us-east-1.snowflakecomputing.com/console#/internal/worksheet
+
+
+store proc plane/table list update:
+https://cognizantonline.sharepoint.com/:x:/r/sites/BayerCyrusCognizant/_layouts/15/Doc.aspx?sourcedoc=%7BB57EA1D0-8858-4515-A54B-C4EDD6DB3EEB%7D&file=CyrusSTTMStoredProcedurePlans_v2-Revised.xlsm&action=default&mobileredirect=true&cid=732d50b8-6ac2-41c1-a0a2-0d934cd33aff
+
+
+Bayer Cyrus (Cognizant) - Git - All Documents (sharepoint.com) :
+https://cognizantonline.sharepoint.com/sites/BayerCyrusCognizant/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=vn9rXf&cid=3568ca55%2D7824%2D4871%2Db496%2D5529ed5b0bc0&RootFolder=%2Fsites%2FBayerCyrusCognizant%2FShared%20Documents%2FGeneral%2FSnowflake%2FGit&FolderCTID=0x0120000C0ECE953F12274FB1DCBE9BF76343B3
+
+leave tracker-
+https://cognizantonline.sharepoint.com/:x:/r/sites/BayerCyrusCognizant/Shared Documents/General/Holiday Tracker/Holiday Tracker_Cyrus.xlsx?d=w406323fd2e3e49928f091dc48df77b26&csf=1&web=1&e=KcZerx
+
+
+
+git lab :-
+----------------------------
+clone rep link : - https://gitlab.bayer.com/ph-cdp/business-layer/snowflake/cyrus/bay-cdp-cyrus-liquibase-phcdw.git
+
+--liquibase formatted sql
+--never change the value of author:changsetid
+--changeset procedure:PROC_COMMON_WHC_DIM_LOAD_169_1 runOnChange:true
+--------------------------------------------------------------
+dbeaver configration :---
+https://cognizantonline-my.sharepoint.com/:v:/g/personal/2029900_cognizant_com/ETZ1MIjpHH5AraSGQ99M4GMBgNXNmuDGFG_T9fdGz-ulUw?isSPOFile=1
+
+
+Git error doc:
+https://cognizantonline.sharepoint.com/:w:/r/sites/BayerCyrusCognizant/_layouts/15/Doc.aspx?sourcedoc=%7B0BD5EBBA-6EF2-45C4-B391-FAE271AEE948%7D&file=Git_code_checkin_instruction_manual.docx&action=default&mobileredirect=true
+
+onco set4 tracker:
+https://cognizantonline.sharepoint.com/:x:/r/sites/BayerCyrusCognizant/Shared%20Documents/General/Snowflake/SF%20Onco%20Set4%20Tracker/Oncology%20Set4%20Tracker.xlsx?d=w84de302b19a343ffad7590b5a16d410f&csf=1&web=1&e=hFBmNV
+
+MA-JOB TRACKER:
+https://cognizantonline.sharepoint.com/:x:/r/sites/BayerCyrusCognizant/_layouts/15/Doc.aspx?sourcedoc=%7B68A63E7C-0E47-4EB2-BF67-900C699873C9%7D&file=Tracker%20for%20TEAM%204%20MA-Market%20Access.xlsx&action=default&mobileredirect=true&cid=74510333-60fb-4bcd-ae87-c6bcfd5b98d7&params=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiIyNy8yMjA1MDEwMTAwOSJ9
+
+-----------------------------------------------------------------------
+get the file name from folder into notepad++ ::
+Select the file/files.
+Hold the shift key and then right-click on the selected file/files.
+You will see Copy as Path. Click that.
+Open a Notepad file and paste and you will be good to go.
+
+
+
+
+
+
+
+
+
+
+--------------------s3 file -------------
+
+list @job_salesiq_reusable_otbd_load_s3_files_gen_stg;
+-------------------------------------------------------------
+CONVERT NORMAL QUERY TO JSON FILE ---
+-----------------------------------------------------------------
+select object_construct('sls_typ',SLSTYP,
+'bh_id',bh_id,
+'bho_id',bho_id,
+'prod_nm',prod_nm,
+'terr_cd',terr_cd,
+'terr_desc',terr_desc,
+'regn_cd',regn_cd,
+'regn_desc',regn_desc,
+'area_cd',area_cd,
+'area_desc',area_desc,
+'nation_cd',nation_cd,
+'nation_desc',nation_desc,
+'hcp_frst_nm', hcp_frst_nm,
+'hcp_last_nm', hcp_last_nm,
+'hcp_addr_1', hcp_addr_1,
+'hcp_addr_2', hcp_addr_2,
+'sls_trxn_dt', sls_trxn_dt,
+'tumour_typ', tumour_typ,
+'acct_nm', acct_nm,
+'acct_addr_1', acct_addr_1,
+'acct_addr_2', acct_addr_2,
+'tot_trm_pack_unit', tot_trm_pack_unit,
+'tot_ptnt_cnt', tot_ptnt_cnt,
+'DATA_DT',DATA_DT,
+'src_sls_trxn_id', src_sls_trxn_id) ALERT_RESULTS
+FROM PHCDW_SYS_COMMON.RPTG_ALERT_VIEW_1_TEMP 
+;
+----------------------------------------------------------------------------------
+
+---------------------------------------
+date_add_function :
+dateadd(day, 5+WEEKEND_COUNT+HOLIDAY_COUNT,BISC_MAX_CALL_DATE)))
+-------------------------------------------------
+time travel :---
+
+select * from phcdw_stg.stg_usps_mrkt_area_dcd at(offset => -60*5);
+insert into phcdw_stg.stg_usps_mrkt_area_dcd
+(select * from phcdw_stg.stg_usps_mrkt_area_dcd at(offset => -60*5));
+
+select * from PHCDW_SYS_LINEAGE_COLUMNS_CONFIG at(timestamp => 'SUN, 11 Dec 2022 16:20:00 -0700'::timestamp_tz)
+insert into PHCDW_SYS_LINEAGE_COLUMNS_CONFIG
+(select * from PHCDW_SYS_LINEAGE_COLUMNS_CONFIG at(timestamp => 'SUN, 11 Dec 2022 16:20:00 -0700'::timestamp_tz));
+
+
+select * from PHCDW_SYS_LINEAGE_COLUMNS_CONFIG before(statement => '01a8ec44-0402-cf75-002f-25032a38ec22');
+insert into PHCDW_SYS_LINEAGE_COLUMNS_CONFIG
+(select * from PHCDW_SYS_LINEAGE_COLUMNS_CONFIG before(statement => '01a8ec44-0402-cf75-002f-25032a38ec22')); 
+
+SEQUENCE :
+
+SELECT max(emp_id_sk)  from phcdw_cons.cons_emp_dim;                                               
+create or replace sequence CONS_EMP_DIM_SEQ START =106319 INCREMENT =1;
+PHCDW_SYS_COMMON.CONS_PAYER_PLAN_DIM.NEXTVAL	,
+
+CONTEXT VALUE CHECK :
+
+select * from PHCDW_SYS_COMMON.PROC_CONTEXT_SQL_INVENTORY 
+where EP_NAME='EP_JVLN_SABS_ALGNMT_MNTHLY_118' 
+AND JOB_NAME='ALIGNMENT_JVLN_SABS_ALGNMT_MNTHLY_job_jvln_cons_emp_dim_mnthly_ups_3'
+
+s3 path :
+="INSERT INTO PHCDW_SYS_COMMON.PHCDW_SYS_PROC_VALUES (EP_NAME,JOB_NAME,PARAM_KEY,PARAM_VALUE,CRTD_DT,MDFD_DT) 
+VALUES ('"&A2&"','"&B2&"','"&C2&"','"&D2&"',current_timestamp, current_timestamp);"
+
+
+SELECT PROCEDURE_DEFINITION ,LAST_ALTERED 
+FROM INFORMATION_SCHEMA.procedures 
+where PROCEDURE_NAME='PROC_COMMON_WHC_FCT_CONS_DEL_INS_LOAD_165' ORDER BY CREATED DESC;
+
+-------------------------------------
+more than one conntex values:
+
+INSERT INTO PHCDW_SYS_COMMON.PROC_CONTEXT_SQL_INVENTORY (EP_NAME,JOB_NAME,CONTEXT_NM,CONTEXT_VAL,CRTD_DT,MDFD_DT) 
+VALUES ('EP_SLSIQ_CYRUS_DLY_FLGRP_272','job_salesiq_reusable_post_otbd_dqc_checks','ROW_ID','(65\,66)',current_timestamp, current_timestamp);
+
+---------------------------------------------
+
+create or replace table phcdw_pub.PUB_SLS_FCT   as  select * FROM   CYRUS_PHCDW_PROD_SHARE.phcdw_pub.PUB_SLS_FCT  ;
+
+
+-------------------------------------
+select "column", type, encoding, distkey, sortkey, "notnull" 
+from pg_table_def where tablename = 'lineorder_compound' and sortkey <> 0;
+
+select ddl
+from admin.v_generate_tbl_ddl
+where schemaname = 'some_schema' and tablename='some_table'
+order by seq asc;
+-----------------------------------------------------------------
+aws- BayerC LS AWS Team (Cognizant) <BayerCLSAWSTeam@cognizant.com>
+
+---------------------------------------
+copy history checking :
+
+select * from table(information_schema.copy_history(table_name=>'PHCDW_RPTG_COMMON.RPTG_SLSFRCE_TM_MPPNG',start_time=> dateadd(hours, -1, current_timestamp())));
+
+select * from cyrus_phcdw_redshift_prod_share.phcdw_cons.cons_time_diM at(timestamp =>to_timestamp_tz('2022-10-10'));
+--------------------------------------------------
+
+SELECT * from PHCDW_QA.PHCDW_SYS_COMMON.PHCDW_SYS_LINEAGE_CONFIG where FILE_GROUP_ID='157' and (EP_NAME)='EP_MDM_BIWKLY_FLGRP_157'
+minus --AND BACKUP_IND=0;
+SELECT distinct table_name from PHCDW_QA.PHCDW_SYS_COMMON.PHCDW_SYS_LINEAGE_columns_CONFIG where FILE_GROUP_ID='157' and (EP_NAME)='EP_MDM_BIWKLY_FLGRP_157';
+
+
+INSERT INTO PHCDW_SYS_COMMON.PHCDW_SYS_LINEAGE_CONFIG(EP_NAME,SCHEMA_NAME,TABLE_NAME,PURPOSE,BACKUP_IND,REFRESH_IND,COMPARE_IND,SOURCE_ENVIRONMENT,SOURCE_DB) VALUES ('EP_GPO_TKI_MNTHLY_FLGRP_182','PHCDW_STG','STG_GPO_TKI_ION_MEMSHP','SOURCE','avaiable in snowflake ','1','1','1','PROD');
+
+
+INSERT INTO PHCDW_SYS_COMMON.PHCDW_SYS_LINEAGE_COLUMNS_CONFIG(FILE_GROUP_ID,EP_NAME,SCHEMA_NAME,TABLE_NAME,COLUMN_NAME,ACTIVE_IND,PRIMARY_KEY_IND) VALUES ('182','EP_GPO_TKI_MNTHLY_FLGRP_182','PHCDW_CONS','CONS_TIME_DIM','PER_NAME_WK','1','0');
+
+---------------------------------------------------------
+EMAIL_PROC:  ep_nm = ''EP_CRDNL_XOF_FUT_ORD_DLY_159'';
+		     job_nm = ''job_crdnl_pub_to_otbd_fut_ord_rsm_del'';
+			 
+-------------------------------------------------------
+//Use the below function to get the dependent objects of view
+
+select * from table(GET_OBJECT_REFERENCES(
+  DATABASE_NAME => 'PHCDW'
+  , SCHEMA_NAME => 'PHCDW_RPTG_CAR'
+  , OBJECT_NAME => 'RPTG_FINER_EMP_CWID_VW' ));
+  
+//=================================cleanup the duplicates
+
+CREATE or replace Table  PROC_CONTEXT_SQL_INVENTORY_BKP AS
+select * from phcdw_dev.phcdw_sys_common.PROC_CONTEXT_SQL_INVENTORY;
+
+truncate table phcdw_dev.phcdw_sys_common.PROC_CONTEXT_SQL_INVENTORY;
+
+insert into phcdw_dev.phcdw_sys_common.PROC_CONTEXT_SQL_INVENTORY
+Select EP_NAME, JOB_NAME, CONTEXT_NM, CONTEXT_VAL, MIN(CRTD_DT) AS CRTD_DT, MAX(MDFD_DT) AS MDFD_DT, MAX(ACTIVE_IND) AS ACTIVE_IND  
+from PROC_CONTEXT_SQL_INVENTORY_BKP group by EP_NAME, JOB_NAME, CONTEXT_NM, CONTEXT_VAL;
+
+//==============================================================
