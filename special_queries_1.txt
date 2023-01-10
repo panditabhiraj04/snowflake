@@ -1,0 +1,384 @@
+--------------------s3 file -------------
+
+list @job_salesiq_reusable_otbd_load_s3_files_gen_stg;
+-------------------------------------------------------------
+CONVERT NORMAL QUERY TO JSON FILE ---
+-----------------------------------------------------------------
+select object_construct('sls_typ',SLSTYP,
+'bh_id',bh_id,
+'bho_id',bho_id,
+'prod_nm',prod_nm,
+'terr_cd',terr_cd,
+'terr_desc',terr_desc,
+'regn_cd',regn_cd,
+'regn_desc',regn_desc,
+'area_cd',area_cd,
+'area_desc',area_desc,
+'nation_cd',nation_cd,
+'nation_desc',nation_desc,
+'hcp_frst_nm', hcp_frst_nm,
+'hcp_last_nm', hcp_last_nm,
+'hcp_addr_1', hcp_addr_1,
+'hcp_addr_2', hcp_addr_2,
+'sls_trxn_dt', sls_trxn_dt,
+'tumour_typ', tumour_typ,
+'acct_nm', acct_nm,
+'acct_addr_1', acct_addr_1,
+'acct_addr_2', acct_addr_2,
+'tot_trm_pack_unit', tot_trm_pack_unit,
+'tot_ptnt_cnt', tot_ptnt_cnt,
+'DATA_DT',DATA_DT,
+'src_sls_trxn_id', src_sls_trxn_id) ALERT_RESULTS
+FROM PHCDW_SYS_COMMON.RPTG_ALERT_VIEW_1_TEMP 
+;
+----------------------------------------------------------------------------------
+
+---------------------------------------
+date_add_function :
+dateadd(day, 5+WEEKEND_COUNT+HOLIDAY_COUNT,BISC_MAX_CALL_DATE)))
+-------------------------------------------------
+time travel :---
+
+select * from phcdw_stg.stg_usps_mrkt_area_dcd at(offset => -60*5);
+insert into phcdw_stg.stg_usps_mrkt_area_dcd
+(select * from phcdw_stg.stg_usps_mrkt_area_dcd at(offset => -60*5));
+
+select * from PHCDW_SYS_LINEAGE_COLUMNS_CONFIG at(timestamp => 'SUN, 11 Dec 2022 16:20:00 -0700'::timestamp_tz)
+insert into PHCDW_SYS_LINEAGE_COLUMNS_CONFIG
+(select * from PHCDW_SYS_LINEAGE_COLUMNS_CONFIG at(timestamp => 'SUN, 11 Dec 2022 16:20:00 -0700'::timestamp_tz));
+
+
+select * from PHCDW_SYS_LINEAGE_COLUMNS_CONFIG before(statement => '01a8ec44-0402-cf75-002f-25032a38ec22');
+insert into PHCDW_SYS_LINEAGE_COLUMNS_CONFIG
+(select * from PHCDW_SYS_LINEAGE_COLUMNS_CONFIG before(statement => '01a8ec44-0402-cf75-002f-25032a38ec22')); 
+
+SEQUENCE :
+
+SELECT max(emp_id_sk)  from phcdw_cons.cons_emp_dim;                                               
+create or replace sequence CONS_EMP_DIM_SEQ START =106319 INCREMENT =1;
+PHCDW_SYS_COMMON.CONS_PAYER_PLAN_DIM.NEXTVAL	,
+
+CONTEXT VALUE CHECK :
+
+select * from PHCDW_SYS_COMMON.PROC_CONTEXT_SQL_INVENTORY 
+where EP_NAME='EP_JVLN_SABS_ALGNMT_MNTHLY_118' 
+AND JOB_NAME='ALIGNMENT_JVLN_SABS_ALGNMT_MNTHLY_job_jvln_cons_emp_dim_mnthly_ups_3'
+
+s3 path :
+="INSERT INTO PHCDW_SYS_COMMON.PHCDW_SYS_PROC_VALUES (EP_NAME,JOB_NAME,PARAM_KEY,PARAM_VALUE,CRTD_DT,MDFD_DT) 
+VALUES ('"&A2&"','"&B2&"','"&C2&"','"&D2&"',current_timestamp, current_timestamp);"
+
+
+SELECT PROCEDURE_DEFINITION ,LAST_ALTERED 
+FROM INFORMATION_SCHEMA.procedures 
+where PROCEDURE_NAME='PROC_COMMON_WHC_FCT_CONS_DEL_INS_LOAD_165' ORDER BY CREATED DESC;
+
+-------------------------------------
+more than one conntex values:
+
+INSERT INTO PHCDW_SYS_COMMON.PROC_CONTEXT_SQL_INVENTORY (EP_NAME,JOB_NAME,CONTEXT_NM,CONTEXT_VAL,CRTD_DT,MDFD_DT) 
+VALUES ('EP_SLSIQ_CYRUS_DLY_FLGRP_272','job_salesiq_reusable_post_otbd_dqc_checks','ROW_ID','(65\,66)',current_timestamp, current_timestamp);
+
+---------------------------------------------
+
+create or replace table phcdw_pub.PUB_SLS_FCT   as  select * FROM   CYRUS_PHCDW_PROD_SHARE.phcdw_pub.PUB_SLS_FCT  ;
+
+
+-------------------------------------
+select "column", type, encoding, distkey, sortkey, "notnull" 
+from pg_table_def where tablename = 'lineorder_compound' and sortkey <> 0;
+
+select ddl
+from admin.v_generate_tbl_ddl
+where schemaname = 'some_schema' and tablename='some_table'
+order by seq asc;
+-----------------------------------------------------------------
+aws- BayerC LS AWS Team (Cognizant) <BayerCLSAWSTeam@cognizant.com>
+
+---------------------------------------
+copy history checking :
+
+select * from table(information_schema.copy_history(table_name=>'PHCDW_RPTG_COMMON.RPTG_SLSFRCE_TM_MPPNG',start_time=> dateadd(hours, -1, current_timestamp())));
+
+select * from cyrus_phcdw_redshift_prod_share.phcdw_cons.cons_time_diM at(timestamp =>to_timestamp_tz('2022-10-10'));
+--------------------------------------------------
+
+SELECT * from PHCDW_QA.PHCDW_SYS_COMMON.PHCDW_SYS_LINEAGE_CONFIG where FILE_GROUP_ID='157' and (EP_NAME)='EP_MDM_BIWKLY_FLGRP_157'
+minus --AND BACKUP_IND=0;
+SELECT distinct table_name from PHCDW_QA.PHCDW_SYS_COMMON.PHCDW_SYS_LINEAGE_columns_CONFIG where FILE_GROUP_ID='157' and (EP_NAME)='EP_MDM_BIWKLY_FLGRP_157';
+
+
+INSERT INTO PHCDW_SYS_COMMON.PHCDW_SYS_LINEAGE_CONFIG(EP_NAME,SCHEMA_NAME,TABLE_NAME,PURPOSE,BACKUP_IND,REFRESH_IND,COMPARE_IND,SOURCE_ENVIRONMENT,SOURCE_DB) VALUES ('EP_GPO_TKI_MNTHLY_FLGRP_182','PHCDW_STG','STG_GPO_TKI_ION_MEMSHP','SOURCE','avaiable in snowflake ','1','1','1','PROD');
+
+
+INSERT INTO PHCDW_SYS_COMMON.PHCDW_SYS_LINEAGE_COLUMNS_CONFIG(FILE_GROUP_ID,EP_NAME,SCHEMA_NAME,TABLE_NAME,COLUMN_NAME,ACTIVE_IND,PRIMARY_KEY_IND) VALUES ('182','EP_GPO_TKI_MNTHLY_FLGRP_182','PHCDW_CONS','CONS_TIME_DIM','PER_NAME_WK','1','0');
+
+---------------------------------------------------------
+EMAIL_PROC:  ep_nm = ''EP_CRDNL_XOF_FUT_ORD_DLY_159'';
+		     job_nm = ''job_crdnl_pub_to_otbd_fut_ord_rsm_del'';
+			 
+-------------------------------------------------------
+//Use the below function to get the dependent objects of view
+
+select * from table(GET_OBJECT_REFERENCES(
+  DATABASE_NAME => 'PHCDW'
+  , SCHEMA_NAME => 'PHCDW_RPTG_CAR'
+  , OBJECT_NAME => 'RPTG_FINER_EMP_CWID_VW' ));
+  
+//=================================cleanup the duplicates
+
+CREATE or replace Table  PROC_CONTEXT_SQL_INVENTORY_BKP AS
+select * from phcdw_dev.phcdw_sys_common.PROC_CONTEXT_SQL_INVENTORY;
+
+truncate table phcdw_dev.phcdw_sys_common.PROC_CONTEXT_SQL_INVENTORY;
+
+insert into phcdw_dev.phcdw_sys_common.PROC_CONTEXT_SQL_INVENTORY
+Select EP_NAME, JOB_NAME, CONTEXT_NM, CONTEXT_VAL, MIN(CRTD_DT) AS CRTD_DT, MAX(MDFD_DT) AS MDFD_DT, MAX(ACTIVE_IND) AS ACTIVE_IND  
+from PROC_CONTEXT_SQL_INVENTORY_BKP group by EP_NAME, JOB_NAME, CONTEXT_NM, CONTEXT_VAL;
+
+//==============================================================  
+
+CREATE OR REPLACE PROCEDURE "PROC_S3_FILE_UPLOAD"("EP_NAME" VARCHAR(16777216), "JOB_NAME" VARCHAR(16777216), "FILE_TYPE" VARCHAR(16777216), "FILE_EXTENSION" VARCHAR(16777216), "FILE_NAME" VARCHAR(16777216), "QUERY_DATA" VARCHAR(16777216))
+RETURNS VARIANT
+LANGUAGE JAVASCRIPT
+EXECUTE AS CALLER
+AS '
+
+
+
+  /*------------------------------------------GETTING THE OTHER PARAM VARIABLES------------------------------------------------------------*/
+      var stmt = snowflake.createStatement({sqlText: ''CALL PHCDW_SYS_COMMON.PROC_PHCDW_SYS_VALUES(:1, :2)'',binds: [EP_NAME, JOB_NAME]});
+      var rs = stmt.execute();
+      while(rs.next()){
+      var lv_json_othr_param_val= rs.getColumnValue(1);
+      }
+      var file_format_name = lv_json_othr_param_val["file_format_name"];
+      var url = lv_json_othr_param_val["url"];
+      var stage_name = lv_json_othr_param_val["stage_name"];
+      var storage_integration = lv_json_othr_param_val["storage_integration"];
+      var full_url = lv_json_othr_param_val["full_url"];
+	  var single = lv_json_othr_param_val["single"];
+	  var delimiter = lv_json_othr_param_val["delimiter"];
+	  var field_enclose = lv_json_othr_param_val["field_enclose"]
+	  var compression = lv_json_othr_param_val["compression"];
+      var null_if_req = lv_json_othr_param_val["null_if_req"];
+	 var fdelimiter = lv_json_othr_param_val["fdelimiter"]; 
+	 var SKIP_HEADER= lv_json_othr_param_val["SKIP_HEADER"];
+	  var empty_field = lv_json_othr_param_val["empty_field"];
+	  
+	  
+      /*------------------------------------------GETTING THE OTHER PARAM VARIABLES ENDS-------------------------------------------------------*/
+	  
+	  
+
+	/*--------------------------------------CREATION OF FILE FORMAT STARTS--------------------------------------------------------*/ 
+	
+	
+	//Checking if empty field true or false
+	var empty = ``;
+	if (empty_field === undefined){
+		empty = ``;
+	}
+	else{
+		empty = `EMPTY_FIELD_AS_NULL = FALSE`;
+	}
+
+
+
+	var FILE_EXTENSION_FILE_FMT = `SELECT REPLACE(''${FILE_EXTENSION}'', ''.'', '''');`;
+	var lv_FILE_EXTENSION_FILE_FMT = snowflake.execute({sqlText: FILE_EXTENSION_FILE_FMT});
+	lv_FILE_EXTENSION_FILE_FMT.next();
+	var file_fmt_ext = lv_FILE_EXTENSION_FILE_FMT.getColumnValue(1);
+	
+	
+	//Checking if delimiters being specified
+	var record_delimiter = ``;
+	if(delimiter === undefined){
+		record_delimiter = ``;
+	}
+	else{
+		record_delimiter = `RECORD_DELIMITER = ''${delimiter}''`;
+	}
+	var field_delimiter = ``;
+if(fdelimiter === undefined){
+		 field_delimiter =``;
+	}
+	else{
+		field_delimiter = `FIELD_DELIMITER = ''${fdelimiter}''`;
+	}
+
+
+	
+	
+	//Checking for field enclosure
+	var field_enclose_by = ``;
+	if(field_enclose === undefined){
+		field_enclose_by = `FIELD_OPTIONALLY_ENCLOSED_BY = ''\\"''`
+	}
+	else if(field_enclose == ''NONE''){
+          
+		field_enclose_by = ` empty_field_as_null=false FIELD_OPTIONALLY_ENCLOSED_BY = NONE`
+	}
+	
+	
+	
+	//Checking for compression
+	var comp = ``;
+	if(compression === undefined){
+		comp = `COMPRESSION = NONE`;
+	}
+	else{
+		comp = `COMPRESSION = ${compression}`;
+	}
+	
+	
+	//Checking for NULL if condition
+	var nl = ``;
+	if(null_if_req === undefined){
+		nl = `NULL_IF = (''\\\\N'', '''')`;
+	}
+	else{
+		nl = `NULL_IF = ()`;
+	}
+	
+	var skpheader=``; var header=``;
+	if(SKIP_HEADER === undefined){
+		header=` HEADER=true `;
+		
+		
+	}
+	else{
+		skpheader = `SKIP_HEADER= 1`;
+		header=` HEADER=false `;
+	}
+	
+
+	//creating the file format
+	var lv_file_frmt_stmt = `CREATE OR REPLACE FILE FORMAT phcdw_sys_common.${file_format_name}_${FILE_TYPE}_${file_fmt_ext}
+							TYPE = ''${FILE_TYPE}''
+							${comp}
+							FILE_EXTENSION=''${FILE_EXTENSION}''
+							${empty}
+							${record_delimiter}
+							${field_delimiter}
+							${skpheader}
+							${field_enclose_by}
+							${nl};`;
+ 
+	var lv_file_frmt_stmt_rs = snowflake.execute({sqlText: lv_file_frmt_stmt});
+	
+
+    /*--------------------------------------CREATION OF FILE FORMAT ENDS--------------------------------------------------------*/ 
+       
+      
+	/*--------------------------------------CREATION OF STAGE STARTS--------------------------------------------------------*/ 
+      
+      /*If full_url is present, that will be considered, else url/ep/job will be considered*/     
+	  
+	  var s3_url = ``;
+	  if(full_url === undefined){
+		s3_url = `${url}/${EP_NAME}/${JOB_NAME}/`
+	  }
+	  else{
+		s3_url = `${full_url}/`
+	  }
+      
+	  var lv_crt_stg_stmt = `create or replace stage phcdw_sys_common.${stage_name}
+							 URL = ''${s3_url}''
+							 STORAGE_INTEGRATION = ${storage_integration};`;
+							 
+	  var lv_crt_stg_rs = snowflake.execute({sqlText: lv_crt_stg_stmt});
+	  
+	  
+	/*--------------------------------------CREATION OF STAGE ENDS--------------------------------------------------------*/ 
+      
+      
+      //remove old_files from stage with file name
+      
+      var lv_pattern = `\\.*${FILE_NAME}\\(_[0-9]*\\)*${FILE_EXTENSION}$`;
+      var removed_path = '''';
+      var lv_rm_file = `remove @phcdw_sys_common.${stage_name} PATTERN = ''${lv_pattern}'';`;
+      var lv_crt_stg_rs = snowflake.execute({sqlText: lv_rm_file});
+      while(lv_crt_stg_rs.next())
+      {
+        removed_path = removed_path+ lv_crt_stg_rs.getColumnValue(1);
+      }
+    
+	
+	/*-----------------------------------------COPY INTO STARTS---------------------------------------------------------*/
+	
+	var sngl = ``;
+	if(single === undefined){
+		sngl = `SINGLE = FALSE`;
+	}
+	else{
+		sngl = `MAX_FILE_SIZE = 5368709120
+                SINGLE = TRUE`;
+	}
+	
+	
+      var lv_copy_stmt=`COPY INTO @phcdw_sys_common.${stage_name}/${FILE_NAME} FROM (${QUERY_DATA})
+                          FILE_FORMAT = (FORMAT_NAME = phcdw_sys_common.${file_format_name}_${FILE_TYPE}_${file_fmt_ext})
+                          OVERWRITE = TRUE
+                          ${sngl}
+                          ${header};`;
+                          
+      var lv_copy_stmt_rs = snowflake.execute({sqlText: lv_copy_stmt});		
+	
+	
+	
+	/*-----------------------------------------COPY INTO ENDS---------------------------------------------------------*/
+	
+      
+  /*--------------------------------------------FETCHING THE UPLOADED LINK FROM EXTERNAL STAGE-------------------------------------------*/      
+      
+      var stage_path =  '''';
+      
+      if(full_url === undefined){
+        var full_path = `${url}/${EP_NAME}/${JOB_NAME}/${FILE_NAME}`;
+      }
+      else{
+        var full_path = `${full_url}/${FILE_NAME}`;
+      }
+      var lv_s3_path_rs = snowflake.execute({sqlText: `List @PHCDW_SYS_COMMON.${stage_name};`});
+      
+           while(lv_s3_path_rs.next())
+           {
+              var dummy = lv_s3_path_rs.getColumnValue(1) ;
+               if( dummy.match(full_path))
+                {
+                   stage_path = dummy;
+                }
+
+
+
+          }
+     /*--------------------------------------------FETCHING THE UPLOADED LINK FROM EXTERNAL STAGE-------------------------------------------*/      
+        
+
+     
+  return full_path;                        
+';
+
+//=============================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
