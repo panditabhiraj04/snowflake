@@ -1,0 +1,696 @@
+desc table PHCDW_SYS_NOTIFICATION_CONFIG;
+
+SELECT * FROM PHCDW_SYS_COMMON.PROC_CONTEXT_SQL_INVENTORY
+WHERE EP_NAME = 'EP_SAP_INDIR_SLS_WKLY_FLGRP_169'
+AND JOB_NAME = 'job_gpo_copa_otbd_chrgbk_excptn_delins';
+
+//2022-03-23 09:05:46.108 
+select current_timestamp;
+insert into phcdw_sys_common.PHCDW_SYS_NOTIFICATION_CONFIG values 
+(PHCDW_SYS_COMMON.PHCDW_SYS_NOTIFICATION_CONFIG_SEQ.nextval,
+'169',
+'EP_SAP_INDIR_SLS_WKLY_FLGRP_169',
+'job_gpo_copa_otbd_chrgbk_excptn_delins',
+'DEFAULT',
+'Hi Team,\n\n\n\nPlease find attached  GPO Aliqopa Chargeback Exception report .\n\n\nThanks,\nCYRUS Support team.\n\n\n\n-----------------------------------------\n\nThis is an auto-generated Mail, please do not reply.',
+'GPO Aliqopa Chargeback Exception - WEEKLY Outbound Feed',
+'TALEND-CYRUS-SUPPORT@bayer.com',
+'cyrus_support_team@bayer.com',
+'',
+'',
+'Y',
+'PROC_GPO_COPA_OTBD_CHRGBK_EXCPTN_DELINS_FILE_FRMT',
+'PROC_GPO_COPA_OTBD_CHRGBK_EXCPTN_DELINS_STG',
+'GPO_COPA_CONSOLIDATED_CHARGEBACK_EXCEPTION_REPORT.xlsx',                                       
+'s3_int_cyrus_dev',
+'SELECT DISTINCT
+
+							CON_PRICE_AMT,
+							CONTRACT_OWNER,
+							DEA_NUMBER,
+							DOC_ITEM,
+							CLAIM_REQUEST_NUMBER,
+							DETERMINED_CONTRACT_PRICE,
+							DETERMINED_WAC_PRICE_RT,
+							src_gpo_nm as GPO_NAME,
+							HIN_NUMBER,
+							IP_QUANTITY,
+							current_date INSERT_DATE ,
+							IP_NET_VAL,
+							\'NA\' MATCH_TYPE,
+							ORGNL_CLM_AMT,
+							PARTNER_IDENTIFICTN1,
+							PARTNER_IDENTIFICATI,
+							SUBMITED_CONTRACT_PRICE,
+							SUBMITTED_WAC_RATE,
+							CHARGEBACK_PAID_PERIOD,
+							AGREEMENT_CONTRACT,
+							CUSTOMER,
+							PROD_HIER_LEVEL_4,
+							MATERIAL,
+							TOT_AMT,
+							SUB_CP,
+							PRICING_DATE
+							FROM
+							(
+							select SIS.SRC_CHBK_MNTH_CD AS CHARGEBACK_PAID_PERIOD,PD.DAY_DT AS PRICING_DATE,SIS.SRC_SAP_MTRL_ID AS MATERIAL,SIS.SRC_INDSLS_TRD_NM_DESC AS PROD_HIER_LEVEL_4,
+							SUBSTRING(\'0000000000\',1,10-LENGTH(SIS.SRC_INDRCT_ACCT_ID))||SIS.SRC_INDRCT_ACCT_ID AS CUSTOMER,
+							SIS.SRC_CTRCT_ID AS AGREEMENT_CONTRACT,SIS.CTRCT_OWNR_NUM AS CONTRACT_OWNER,SIS.DOC_NUM AS CLAIM_REQUEST_NUMBER,SIS.DOC_ITM_NUM AS DOC_ITEM,
+							SIS.DEA_NUM AS DEA_NUMBER,SIS.HIN_NUM AS HIN_NUMBER,SIS.PRTNR_ID_TYP_LST AS PARTNER_IDENTIFICATI,SIS.PRTNR_ID AS PARTNER_IDENTIFICTN1,
+							SIS.INDRCT_SLS_QTY AS IP_QUANTITY,SIS.DTRMND_CTRCT_SLS_AMT AS DETERMINED_CONTRACT_PRICE,SIS.SBMTD_CTRCT_SLS_AMT AS SUBMITED_CONTRACT_PRICE,
+							SIS.IP_NET_VAL,SIS.ORGNL_CLM_AMT,SIS.TOT_AMT,SIS.CON_PRICE_AMT,SIS.WHC_SUB_CP_AMT AS SUB_CP,SIS.SBMTD_WAC_RT_VAL AS SUBMITTED_WAC_RATE,
+							SIS.DTRMND_WAC_PRICE_RT_VAL AS DETERMINED_WAC_PRICE_RT,
+							CASE WHEN SRC_CTRCT_ID in (\'0060043143\') THEN \'ION\' WHEN SRC_CTRCT_ID in (\'0060043552\') THEN \'UNITY\' END AS src_gpo_nm
+							from phcdw_pub.pub_onc_bu_indrct_sls_fct SIS left join
+							phcdw_pub.PUB_TIME_DIM_VW PD ON PD.DT_ID_SK=SIS.WHSLR_USR_INVC_DT_ID_SK
+							WHERE SUBSTRING(\'0000000000\',1,10-LENGTH(SIS.SRC_CTRCT_ID))||SIS.SRC_CTRCT_ID IN (\'0060043143\',\'0060043552\')
+							AND SIS.SRC_INDSLS_TRD_NM_DESC in (\'Aliqopa\')
+							AND PD.DAY_DT in
+							(
+							SELECT MONTH_ID
+							FROM(
+							SELECT DAY_DT AS MONTH_ID,
+							CASE
+							WHEN \'WEEKLY\' =\'QUARTERLY\'
+							THEN LAST_DAY(ADD_MONTHS(current_date,-8))+1
+							WHEN \'WEEKLY\'=\'WEEKLY\'
+							THEN LAST_DAY(ADD_MONTHS(current_date,-6))+1
+							WHEN \'WEEKLY\'=\'YEARLY\'
+							THEN LAST_DAY(ADD_MONTHS(current_date,-EXTRACT(MONTH FROM current_date)-12))+1
+							END START_DATE
+							FROM phcdw_pub.PUB_TIME_DIM_VW WHERE DAY_DT >=START_DATE  
+							AND DAY_DT<=
+							CASE
+							WHEN \'WEEKLY\' =\'QUARTERLY\'
+							THEN LAST_DAY(ADD_MONTHS(current_date,-2))
+							WHEN \'WEEKLY\'=\'WEEKLY\'
+							THEN LAST_DAY(ADD_MONTHS(current_date,0))
+							WHEN \'WEEKLY\'=\'YEARLY\'
+							THEN LAST_DAY(ADD_MONTHS(current_date,-EXTRACT(MONTH FROM current_date)))
+							END
+							)AA
+							)
+
+							MINUS
+
+							SELECT CHARGEBACK_PAID_PERIOD,PRICING_DATE,MATERIAL,PROD_HIER_LEVEL_4,SUBSTRING(\'0000000000\',1,10-LENGTH(CUSTOMER))||CUSTOMER AS CUSTOMER,
+							AGREEMENT_CONTRACT,CONTRACT_OWNER,CLAIM_REQUEST_NUMBER,DOC_ITEM,DEA_NUMBER,HIN_NUMBER,PARTNER_IDENTIFICATI,PARTNER_IDENTIFICTN1
+							,IP_QUANTITY,DETERMINED_CONTRACT_PRICE,SUBMITED_CONTRACT_PRICE,IP_NET_VALUE,ORIGINAL_CLAIM_AMNT,TOTAL_AMNT,CON_PRICE,SUB_CP,
+							SUBMITTED_WAC_RATE,DETERMINED_WAC_PRICE_RT ,gpo_name as src_gpo_nm
+							FROM phcdw_work.OTBD_GPO_COPA_CHBK
+							) C
+							JOIN phcdw_pub.PUB_MDM_ACCT_XREF_VW CR ON C.CUSTOMER=CR.xref_SRC_ID AND CR.XREF_SRC_CD=\'SAP\'',
+'s3://bay-cph-cdp-cyrus-predev-landing-us-east-1/snowflake/phcdw/',
+CURRENT_TIMESTAMP,
+CURRENT_TIMESTAMP
+);
+
+Call PROC_GPO_COPA_OTBD_CHRGBK_EXCPTN_DELINS('230320221709','2','3','4');
+
+select * from PHCDW_SYS_NOTIFICATION_LOG_VW where EP_NAME = 'EP_SAP_INDIR_SLS_WKLY_FLGRP_169';
+ 
+CREATE OR REPLACE PROCEDURE "PROC_GPO_COPA_OTBD_CHRGBK_EXCPTN_DELINS"("BATCH_ID" VARCHAR(16777216), "FILE_ID" VARCHAR(16777216), "FILE_GROUP_ID" VARCHAR(16777216), "JOB_ID" VARCHAR(16777216))
+RETURNS VARIANT
+LANGUAGE JAVASCRIPT
+EXECUTE AS CALLER
+AS '
+   /********************************************************************************************                                                    
+** Name   :PROC_GPO_COPA_OTBD_CHRGBK_EXCPTN_DELINS
+** Desc   :This is a snowflake stored procedure which is responsible for loading the data from pub_onc_bu_indrct_sls_fct  to otbd_gpo_copa_chbk_excptn. 
+** Auth   :CTS 
+** Date   :11/29/2021 (MM/DD/YYYYY)
+** Input  : BATCH_ID - it''s the batch id of the AWS Glue job
+**          FILE_ID - It''s the file Id 
+**          FILE_GROUP_ID - It''s a file group id
+** Output : A JSON response in before format -
+**                  [
+**                  {
+**                   "DESC": "SUCCESS",
+**                   "STATUS": 0,
+**                   "INSERTCOUNT": 100092,
+**					 "UPDATECOUNT": 99	
+**					 "DELETECOUNT": 0 -- TBD		
+**                  }
+**                  ]
+***********************************************************************************************       
+***********************************************************************************************       
+** Convention :
+**       “PROC_”[{SOURCESYSTEMCODE}]”_"{PRODUCTCODE}”_"{TYPEOFDATA}”_”{WKLY/DLY}_”{TARGETTABLE}”
+**      -  The name should be starting with “PROC” 
+**      -  followed by [{SOURCESYSTEMCODE}] like “PRM” , but it''s optional, 
+**      -  then {PRODUCTCODE} e.g, TKI
+** 		-  {TYPEOFDATA} -  like SLS for sales
+**      -  followed by frequency “WKLY”/” DLY”
+**      –  {TARGETTABLE}- target table name 
+**      -  Proc should be created in UPPER CASE
+**      -  All variables inside stored procedures should be in snakecase (lower case & separated by “_”).
+**      -  All local variables should start with lv_ and if global variables, they should start with gv_.
+**
+**
+**********************************************************************************************
+** Change History
+**********************************************************************************************
+** PR   Date        Author              Description 
+** --   --------   -------   ------------------------------------
+** 1   11/29/2021   CTS      loading the data from pub_onc_bu_indrct_sls_fct  to otbd_gpo_copa_chbk_excptn.
+**
+**
+***********************************************************************************************/
+
+
+   /*--------------------standard variables that are used for auditing----------------*/
+
+    // this variable is used in passing the status code (0/-1) to audit table and also while sending JSON to caller. Initialized to -1 i.e. failure
+    var lv_status_cd = -1;
+    
+    // this variable is used in passing the status desc (success/Failure) to audit table and also while sending JSON to caller. Initialized to Failure
+    var lv_status_desc =", Status : Failure";
+    
+    // this variable is used in passing the response to caller in the form of JSON.
+    var lv_response_json = [];
+    
+    // this variable is used in passing the response to caller in the form of JSON.
+    var lv_result_json = {};
+    
+    // pass the procedure name here, this is used for auditing purpose
+    var lv_sp_name ="PROC_GPO_COPA_OTBD_CHRGBK_EXCPTN_DELINS"; 
+    
+    // call to  proc_phcdw_log_audit without bind information. actual parameters will be binded to thsi call after the DML is done.
+    var lv_audit_sql = "call phcdw_sys_common.proc_phcdw_log_audit(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+       
+    // number of records getting inserted on target table
+    var lv_ins_cnt = 0; 
+	
+	// number of records getting updated on target table
+    var lv_upd_cnt = 0; 
+	
+	// number of records getting deleted on target table
+	var lv_del_cnt = 0; 
+       
+    // Mandatory params. if no values, then throw exception   
+    var lv_mandatory_params_msg = "batch_id,file_id and file_group_id is mandatory";
+	
+	var result = "Store Procedure : ";
+	
+	var status_success = ", Status : Successful";
+	
+	var error_detail =  ", Error Details";
+                            
+	var lv_na = ''NA'';
+
+	var lv_y = "Y";
+    
+    var lv_e = '''';
+    
+    var lv_ep_nm =''EP_SAP_INDIR_SLS_WKLY_FLGRP_169'';
+    
+    var lv_job_nm = ''job_gpo_copa_otbd_chrgbk_excptn_delins'';
+    
+    var lv_isSuccess1 = 0;
+    
+    lv_isCloneSuccess =0;
+    
+    //This will hold the arrays for the ultimate JSON response
+    var lv_details_json = [];
+    var lv_details_array = {};
+    
+    //This is used for calling the UDF
+    var lv_table_array = {};
+    lv_counts_array = {};
+    
+    //variable for email notification
+    var lv_notification = 0;
+
+try {
+     // Declare and initialize start_time of the procedure
+     var lv_start_time_rs = snowflake.createStatement( { sqlText: `select current_timestamp()` } ).execute();
+     lv_start_time_rs.next();
+     var lv_start_time = lv_start_time_rs.getColumnValue(1);
+     
+     //declare and initialize start_time in varchar for time travel purpose 
+     var lv_tt_start_time_rs = snowflake.createStatement( { sqlText: `select to_char(current_timestamp())` } ).execute();
+     lv_tt_start_time_rs.next();
+     var lv_tt_start_time = lv_tt_start_time_rs.getColumnValue(1);
+       
+  /*---------------------Input Validation Starts (TBD)-----------------*/
+   
+    /*  if (BATCH_ID is null OR FILE_ID is null OR FILE_GROUP_ID is null){
+           throw lv_mandatory_params_msg;
+      } */
+         
+  /*---------------------Input Validation Ends------------------------*/
+  /*--------------------Main procedure logic starts -----------*/
+ 
+ 
+ /*------------------------------------------GETTING THE CONTEXT VARIABLE STARTS------------------------------------------------------------*/
+    
+     var stmt = snowflake.createStatement({sqlText: ''CALL phcdw_sys_common.GET_CONTEXT_VALUES(:1, :2)'',binds: [lv_ep_nm, lv_job_nm]});
+     var rs = stmt.execute();
+     while(rs.next()){
+            var lv_json_context_val= rs.getColumnValue(1); 
+			
+			var tgt_table_name = lv_json_context_val[''tgt_table_name'']; 
+			var Redshift_Schema_work = lv_json_context_val[''Redshift_Schema_work'']; 
+			var Redshift_Schema_pub = lv_json_context_val[''Redshift_Schema_pub'']; 
+			var frequency = lv_json_context_val[''frequency'']; 
+            var email_from = lv_json_context_val[''from_email''];
+            var email_to = lv_json_context_val[''to_mail'']; 
+            var FLGRPID = lv_json_context_val[''FLGRPID''];
+
+     }    
+
+     //target table name 
+     var lv_tbl_nm = Redshift_Schema_work+"."+tgt_table_name;
+
+
+  /*------------------------------------------GETTING THE CONTEXT VARIABLES ENDS-------------------------------------------------------*/
+  
+  /*-----------------------------------------Email notification Starts ---------------------------------------------------*/
+      
+      //var lv_cond_val = 0;
+ 
+      var lv_email_success = '''';
+      var mail_status = ''''; 
+         
+      var attachment_flg =''Y'';
+      var notification_type = ''DEFAULT'';
+
+        lv_email_stmt = `call PHCDW_SYS_COMMON.PROC_PHCDW_EMAIL_NOTIFICATION(:1,:2,:3,:4,:5,:6,null,null,array_construct(''GPO_COPA_CONSOLIDATED_CHARGEBACK_EXCEPTION_REPORT.xlsx''));`;
+        
+        var lv_mail_rs = snowflake.execute({sqlText: lv_email_stmt, binds: [FLGRPID,lv_ep_nm,lv_job_nm,notification_type,attachment_flg,BATCH_ID,email_from,email_to]});
+        while (lv_mail_rs.next())
+              {
+                  mail_status = lv_mail_rs.getColumnValue(1);
+              }
+           if(mail_status == ''successful'')
+              {
+                  lv_notification=1;
+              }
+           else
+              {
+                  lv_notification = -1;
+              }
+              
+  /*-----------------------------------------Email notification ENDS ---------------------------------------------------*/
+  
+
+  /*----------------------------------------------------------------TRUNCATING Target Table STARTS--------------------------------------------------------*/
+ 
+  var sqlTruncateText = `delete from ${Redshift_Schema_work}.${tgt_table_name};`;
+  
+  var ctas_stmt = snowflake.createStatement({ sqlText: sqlTruncateText });
+  ctas_stmt.execute();
+  lv_isSuccess1 = 1; 
+  
+  /*----------------------------------------------------------------TRUNCATING Target Table ENDS--------------------------------------------------------*/
+  
+  
+   /*---------------------------------------------- Creating a temp table Starts ---------------------------------------*/
+ 
+  var sqlTempTableText = `CREATE OR REPLACE TEMPORARY TABLE phcdw_sys_common.src_sls_fct LIKE ${Redshift_Schema_work}.${tgt_table_name};`;
+  var lv_ctas_stmt = snowflake.createStatement({ sqlText: sqlTempTableText });
+  lv_ctas_stmt.execute();
+
+   /*---------------------------------------------- Creating a temp table Ends ---------------------------------------*/
+
+  /*-----------------------Inserting into a temp table Starts-------------------------*/
+     
+   var sqlInsertText = `INSERT INTO phcdw_sys_common.src_sls_fct
+							(btchadt_id_sk	,
+							jobadt_id_sk	,
+							crtd_dt	,
+							mdfd_dt	,
+							con_price	,
+							contract_owner	,
+							dea_number	,
+							doc_item	,
+							claim_request_number	,
+							determined_contract_price	,
+							determined_wac_price_rt	,
+							gpo_name	,
+							hin_number	,
+							ip_quantity	,
+							insert_date	,
+							ip_net_value	,
+							match_type	,
+							original_claim_amnt	,
+							partner_identifictn1	,
+							partner_identificati	,
+							submited_contract_price	,
+							submitted_wac_rate	,
+							chargeback_paid_period	,
+							agreement_contract	,
+							customer	,
+							prod_hier_level_4	,
+							material	,
+							total_amnt	,
+							sub_cp	,
+							pricing_date	
+							)
+							SELECT 
+							:1,
+							:2,
+							:3,
+							:3,
+							CON_PRICE_AMT,
+							CONTRACT_OWNER,
+							DEA_NUMBER,
+							DOC_ITEM,
+							CLAIM_REQUEST_NUMBER,
+							DETERMINED_CONTRACT_PRICE,
+							DETERMINED_WAC_PRICE_RT,
+							src_gpo_nm as GPO_NAME,
+							HIN_NUMBER,
+							IP_QUANTITY,
+							current_date INSERT_DATE ,
+							IP_NET_VAL,
+							''NA'' MATCH_TYPE,
+							ORGNL_CLM_AMT,
+							PARTNER_IDENTIFICTN1,
+							PARTNER_IDENTIFICATI,
+							SUBMITED_CONTRACT_PRICE,
+							SUBMITTED_WAC_RATE,
+							CHARGEBACK_PAID_PERIOD,
+							AGREEMENT_CONTRACT,
+							CUSTOMER,
+							PROD_HIER_LEVEL_4,
+							MATERIAL,
+							TOT_AMT,
+							SUB_CP,
+							PRICING_DATE
+
+							FROM
+							(
+							select SIS.SRC_CHBK_MNTH_CD AS CHARGEBACK_PAID_PERIOD,
+                            PD.DAY_DT AS PRICING_DATE,
+                            SIS.SRC_SAP_MTRL_ID AS MATERIAL,
+                            SIS.SRC_INDSLS_TRD_NM_DESC AS PROD_HIER_LEVEL_4,
+							SUBSTRING(''0000000000'',1,10-LENGTH(SIS.SRC_INDRCT_ACCT_ID))||SIS.SRC_INDRCT_ACCT_ID AS CUSTOMER,
+							SIS.SRC_CTRCT_ID AS AGREEMENT_CONTRACT,
+                            SIS.CTRCT_OWNR_NUM AS CONTRACT_OWNER,
+                            SIS.DOC_NUM AS CLAIM_REQUEST_NUMBER,
+                            SIS.DOC_ITM_NUM AS DOC_ITEM,
+							SIS.DEA_NUM AS DEA_NUMBER,
+                            SIS.HIN_NUM AS HIN_NUMBER,
+                            SIS.PRTNR_ID_TYP_LST AS PARTNER_IDENTIFICATI,
+                            SIS.PRTNR_ID AS PARTNER_IDENTIFICTN1,
+							SIS.INDRCT_SLS_QTY AS IP_QUANTITY,
+                            SIS.DTRMND_CTRCT_SLS_AMT AS DETERMINED_CONTRACT_PRICE,
+                            SIS.SBMTD_CTRCT_SLS_AMT AS SUBMITED_CONTRACT_PRICE,
+							SIS.IP_NET_VAL,
+                            SIS.ORGNL_CLM_AMT,SIS.TOT_AMT,
+                            SIS.CON_PRICE_AMT,
+                            SIS.WHC_SUB_CP_AMT AS SUB_CP,
+                            SIS.SBMTD_WAC_RT_VAL AS SUBMITTED_WAC_RATE,
+							SIS.DTRMND_WAC_PRICE_RT_VAL AS DETERMINED_WAC_PRICE_RT,
+							CASE WHEN SRC_CTRCT_ID in (''0060043143'') THEN ''ION'' WHEN SRC_CTRCT_ID in (''0060043552'') THEN ''UNITY'' END AS src_gpo_nm
+                              
+							from ${Redshift_Schema_pub}.pub_onc_bu_indrct_sls_fct SIS 
+                              
+                            left join ${Redshift_Schema_pub}.PUB_TIME_DIM_VW PD 
+                            ON PD.DT_ID_SK=SIS.WHSLR_USR_INVC_DT_ID_SK
+							WHERE SUBSTRING(''0000000000'',1,10-LENGTH(SIS.SRC_CTRCT_ID))||SIS.SRC_CTRCT_ID IN (''0060043143'',''0060043552'')
+							AND SIS.SRC_INDSLS_TRD_NM_DESC in (''Aliqopa'')
+							AND PD.DAY_DT in
+							(
+							SELECT MONTH_ID
+							FROM(
+							SELECT DAY_DT AS MONTH_ID,
+							CASE
+							WHEN ''${frequency}'' =''QUARTERLY''
+							THEN LAST_DAY(ADD_MONTHS(current_date,-8))+1
+							WHEN ''${frequency}''=''WEEKLY''
+							THEN LAST_DAY(ADD_MONTHS(current_date,-6))+1
+							WHEN ''${frequency}''=''YEARLY''
+							THEN LAST_DAY(ADD_MONTHS(current_date,-EXTRACT(MONTH FROM current_date)-12))+1
+							END START_DATE
+							FROM ${Redshift_Schema_pub}.PUB_TIME_DIM_VW WHERE DAY_DT >=START_DATE  
+							AND DAY_DT<=
+							CASE
+							WHEN ''${frequency}'' =''QUARTERLY''
+							THEN LAST_DAY(ADD_MONTHS(current_date,-2))
+							WHEN ''${frequency}''=''WEEKLY''
+							THEN LAST_DAY(ADD_MONTHS(current_date,0))
+							WHEN ''${frequency}''=''YEARLY''
+							THEN LAST_DAY(ADD_MONTHS(current_date,-EXTRACT(MONTH FROM current_date)))
+							END
+							)AA
+							)
+
+							MINUS
+
+							SELECT CHARGEBACK_PAID_PERIOD,PRICING_DATE,MATERIAL,PROD_HIER_LEVEL_4,SUBSTRING(''0000000000'',1,10-LENGTH(CUSTOMER))||CUSTOMER AS CUSTOMER,
+							AGREEMENT_CONTRACT,CONTRACT_OWNER,CLAIM_REQUEST_NUMBER,DOC_ITEM,DEA_NUMBER,HIN_NUMBER,PARTNER_IDENTIFICATI,PARTNER_IDENTIFICTN1
+							,IP_QUANTITY,DETERMINED_CONTRACT_PRICE,SUBMITED_CONTRACT_PRICE,IP_NET_VALUE,ORIGINAL_CLAIM_AMNT,TOTAL_AMNT,CON_PRICE,SUB_CP,
+							SUBMITTED_WAC_RATE,DETERMINED_WAC_PRICE_RT ,gpo_name as src_gpo_nm
+							FROM ${Redshift_Schema_work}.OTBD_GPO_COPA_CHBK
+							) C
+							JOIN ${Redshift_Schema_pub}.PUB_MDM_ACCT_XREF_VW CR 
+                            ON C.CUSTOMER=CR.xref_SRC_ID 
+                            AND CR.XREF_SRC_CD=''SAP'';`;
+                              
+                              
+  
+   var temp_load = snowflake.execute({sqlText : sqlInsertText,binds:[BATCH_ID,JOB_ID,lv_start_time]});
+   temp_load.next();
+  
+   /*------------------------Inserting into a temp table Ends---------------*/ 
+   
+   /*------------------------Inserting into a target table Starts-----------*/
+  
+  
+   var sqlInsertText = `INSERT INTO ${Redshift_Schema_work}.${tgt_table_name}
+							(
+							btchadt_id_sk	,
+							jobadt_id_sk	,
+							crtd_dt	,
+							mdfd_dt	,
+							con_price	,
+							contract_owner	,
+							dea_number	,
+							doc_item	,
+							claim_request_number	,
+							determined_contract_price	,
+							determined_wac_price_rt	,
+							gpo_name	,
+							hin_number	,
+							ip_quantity	,
+							insert_date	,
+							ip_net_value	,
+							match_type	,
+							original_claim_amnt	,
+							partner_identifictn1	,
+							partner_identificati	,
+							submited_contract_price	,
+							submitted_wac_rate	,
+							chargeback_paid_period	,
+							agreement_contract	,
+							customer	,
+							prod_hier_level_4	,
+							material	,
+							total_amnt	,
+							sub_cp	,
+							pricing_date	
+							)
+							SELECT
+							btchadt_id_sk	,
+							jobadt_id_sk	,
+							crtd_dt	,
+							mdfd_dt	,
+							con_price	,
+							contract_owner	,
+							dea_number	,
+							doc_item	,
+							claim_request_number	,
+							determined_contract_price	,
+							determined_wac_price_rt	,
+							gpo_name	,
+							hin_number	,
+							ip_quantity	,
+							insert_date	,
+							ip_net_value	,
+							match_type	,
+							original_claim_amnt	,
+							partner_identifictn1	,
+							partner_identificati	,
+							submited_contract_price	,
+							submitted_wac_rate	,
+							chargeback_paid_period	,
+							agreement_contract	,
+							customer	,
+							prod_hier_level_4	,
+							material	,
+							total_amnt	,
+							sub_cp	,
+							pricing_date	
+
+							FROM phcdw_sys_common.src_sls_fct`
+							
+							
+			    var target_load = snowflake.execute({sqlText : sqlInsertText});
+			    target_load.next()
+				lv_ins_cnt= target_load.getNumRowsAffected();
+				
+   /*---------------Inserting into a target table Starts-----------------*/ 
+                              
+  /*------------------------------------------GETTING THE OTHER PARAM VARIABLES------------------------------------------------------------*/
+
+    var stmt = snowflake.createStatement({sqlText: `CALL PHCDW_SYS_COMMON.PROC_PHCDW_SYS_VALUES(:1, :2)`,binds: [lv_ep_nm, lv_job_nm]});
+    var rs = stmt.execute();
+    while(rs.next()){
+    var lv_json_othr_param_val= rs.getColumnValue(1);
+    }
+     var file_name = lv_json_othr_param_val["file_name"];
+                              
+      var lv_start_date_rs = snowflake.createStatement( { sqlText: `select to_varchar(current_date())` } ).execute();
+      lv_start_date_rs.next();
+      var lv_start_date = lv_start_date_rs.getColumnValue(1);
+
+      file_name = file_name + lv_start_date;                         
+
+                              
+    var query_data = `SELECT * FROM phcdw_sys_common.src_sls_fct`;
+
+    var lv_s3_upload_stmt =`CALL PROC_S3_FILE_UPLOAD(:1,:2,''CSV'',''.zip'',:3,:4);`;
+
+    var lv_s3_upload_rs = snowflake.execute({sqlText: lv_s3_upload_stmt, binds:[lv_ep_nm,lv_job_nm,file_name,query_data,lv_start_time]});
+    lv_s3_upload_rs.next();
+    var lv_stage_path = lv_s3_upload_rs.getColumnValue(1);
+
+  /*---------------------------------------------------S3_UPLOAD_ENDS----------------------------------------------------------------------*/
+                              
+                              
+   
+  /*--------------------------------------INSERTING COUNTS INTO TABLE ARRAY STARTS--------------------------------------*/ 
+   
+   lv_counts_array["INSERTCOUNT"] = lv_ins_cnt;
+   lv_counts_array["UPDATECOUNT"] = lv_upd_cnt;
+   lv_counts_array["DELETECOUNT"] = lv_del_cnt;
+   lv_counts_array["TABLE"] = lv_tbl_nm;
+   lv_table_array["table1"] = lv_counts_array;
+   lv_counts_array = {};
+   
+   /*--------------------------------------INSERTING COUNTS INTO TABLE ARRAY ENDS--------------------------------------*/ 
+   
+   lv_status_cd = 0;
+   lv_status_desc = result+ lv_sp_name + status_success;
+   
+   //Declare and initialize end_time of the procedure
+     var lv_end_time_rs = snowflake.createStatement({ sqlText: `select current_timestamp()`}).execute();
+     lv_end_time_rs.next();
+     var lv_end_time = lv_end_time_rs.getColumnValue(1);
+   
+   /*----------------------------------------UDF, GRANTS, AUDIT PROC CALL STARTS---------------------------------------*/
+  
+  
+  for(var i in lv_table_array){
+  
+  //UDF call
+  var stmt = snowflake.createStatement({sqlText: ''SELECT phcdw_sys_common.RESPONSE_JSON(:1, :2, :3, :4)'',binds: [lv_table_array[i]["TABLE"], lv_table_array[i]["INSERTCOUNT"], lv_table_array[i]["UPDATECOUNT"], lv_table_array[i]["DELETECOUNT"]]});
+     var rs = stmt.execute();
+     while(rs.next()){
+            lv_details_array = rs.getColumnValue(1); 
+     }
+   lv_details_json.push(lv_details_array); 
+
+     
+    //audit procedure call 
+    var lv_call_audit_proc = snowflake.createStatement({sqlText: lv_audit_sql,
+                                binds: [BATCH_ID, FILE_ID,FILE_GROUP_ID,lv_sp_name,lv_table_array[i]["INSERTCOUNT"],lv_table_array[i]["UPDATECOUNT"], lv_status_cd, lv_status_desc,lv_start_time, lv_end_time,0,"","","", lv_table_array[i]["DELETECOUNT"], JOB_ID]}); 
+     lv_call_audit_proc.execute(); 
+       
+   }
+                            
+                      
+
+  /*--------------------------------------UDF, GRANTS, AUDIT PROC CALL ENDS----------------------------------*/    
+
+
+     //send success information status code and status desc to JSON
+     lv_result_json["STATUS"]=lv_status_cd;
+     lv_result_json["DESC"]=lv_status_desc;
+     lv_result_json["NOTIFICATION"]=lv_notification;     
+     lv_result_json["DETAILS"]=lv_details_json;
+
+
+  /*--------------------Main procedure logic ends ----------------*/
+  }
+  /*--------------------Exception block----------------*/ 
+
+  catch(err)
+ {
+             
+                            
+    if(lv_isSuccess1 > 0){
+        var lv_sqlTimeTravelText = `CREATE OR REPLACE TABLE ${Redshift_Schema_work}.${tgt_table_name} AS 
+                                    SELECT * FROM ${Redshift_Schema_work}.${tgt_table_name} AT (timestamp => ''${lv_tt_start_time}''::timestamp_ltz);`; 
+                                    
+        var lv_tt_rs = snowflake.execute({sqlText: lv_sqlTimeTravelText});
+       lv_tt_rs.next();  
+        }
+                   
+     //Assign and send fail information status code and status desc to JSON
+       lv_ins_cnt = 0;
+       lv_upd_cnt = 0;
+	   lv_del_cnt = 0;
+       lv_status_desc = result+lv_sp_name + lv_status_desc;
+       lv_details_json = [];                                 
+       lv_details_array = {};
+       lv_notification = 0;
+       
+   /*--------------------------------------INSERTING COUNTS INTO TABLE ARRAY STARTS--------------------------------------*/     
+    /*-------------------------------------UDF CALL, GRANTS STARTS----------------------------------*/
+                                        
+   for(var i in lv_table_array){
+                                        
+  //UDF CALL                                      
+  var stmt = snowflake.createStatement({sqlText: ''SELECT phcdw_sys_common.RESPONSE_JSON(:1, :2, :3, :4)'',binds: [lv_table_array[i]["TABLE"], lv_table_array[i]["INSERTCOUNT"], lv_table_array[i]["UPDATECOUNT"], lv_table_array[i]["DELETECOUNT"]]});
+     var rs = stmt.execute();
+     while(rs.next()){
+            lv_details_array = rs.getColumnValue(1); 
+     }
+     
+   lv_details_json.push(lv_details_array); 
+                                        
+                       
+	                           
+                                        
+   }       
+                            
+                                        
+
+  /*-------------------------------------UDF CALL, GRANTS ENDS----------------------------------*/   
+      
+//      lv_details_array = {};
+	   
+		lv_result_json["STATUS"]=lv_status_cd;
+		lv_result_json["DESC"]= lv_status_desc + error_detail + err.code +" "+ err.state +" "+ err.stackTraceTxt ;
+        lv_result_json["NOTIFICATION"]=lv_notification;  
+        lv_result_json["DETAILS"]=lv_details_json;
+       
+       
+       
+       
+          //Declare and initialize end_time of the procedure
+       var lv_end_time_rs = snowflake.createStatement( { sqlText: `select current_timestamp()` } ).execute();
+       lv_end_time_rs.next();
+       var lv_end_time = lv_end_time_rs.getColumnValue(1);
+               
+               
+               
+               
+          
+        //call audit procedure with parameters
+       var lv_call_audit_proc = snowflake.createStatement({sqlText: lv_audit_sql,
+       binds: [BATCH_ID, FILE_ID,FILE_GROUP_ID,lv_sp_name,lv_ins_cnt,lv_upd_cnt, lv_status_cd, lv_status_desc,lv_start_time, lv_end_time, err.code,err.state, "", err.stackTraceTxt, lv_del_cnt, JOB_ID]}); 
+        lv_call_audit_proc.execute(); 
+                   
+                            
+    }
+    
+                            
+lv_response_json.push(lv_result_json);  
+return lv_response_json;                           
+
+ 
+ ';
